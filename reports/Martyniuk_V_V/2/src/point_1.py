@@ -68,7 +68,7 @@ if __name__ == "__main__":
     print("После изменений:", end=" ")
     set1.display()
 
-    set3 = VariableSet([1, 2, 4, 5, 10])
+    set3 = VariableSet([1, 2, 4, 5, 9])
     print(f"set1 == set3? {set1 == set3}")
 
     set1.add(5)
