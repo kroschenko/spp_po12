@@ -102,9 +102,7 @@ class LimitedSet:
         self._elements.clear()
 
     def display(self) -> None:
-        elements_str = (
-            ", ".join(map(str, self._elements)) if self._elements else "empty"
-        )
+        elements_str = ", ".join(map(str, self._elements)) if self._elements else "empty"
         print(f"{{{elements_str}}} [{self.size}/{self._capacity}]")
 
     def to_list(self) -> List[int]:
@@ -114,9 +112,7 @@ class LimitedSet:
         return set(self._elements)
 
     def __str__(self) -> str:
-        elements_str = (
-            ", ".join(map(str, self._elements)) if self._elements else "empty"
-        )
+        elements_str = ", ".join(map(str, self._elements)) if self._elements else "empty"
         return f"LimitedSet({{{elements_str}}}, {self.size}/{self._capacity})"
 
     def __repr__(self) -> str:
