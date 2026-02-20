@@ -1,4 +1,4 @@
-from typing import List, Optional, Set, Union, Iterable
+from typing import List, Optional, Set, Iterable
 
 
 class LimitedSet:
@@ -38,34 +38,34 @@ class LimitedSet:
     def elements(self) -> List[int]:
         return self._elements.copy()
 
-    def add(self, element: int) -> bool:
-        if not isinstance(element, int):
-            raise TypeError(f"Expected integer, got {type(element).__name__}")
+    def add(self, value: int) -> bool:
+        if not isinstance(value, int):
+            raise TypeError(f"Expected integer, got {type(value).__name__}")
 
-        if element in self._elements:
+        if value in self._elements:
             return False
 
         if self.size >= self._capacity:
             raise OverflowError(f"Set is at full capacity ({self._capacity})")
 
-        self._elements.append(element)
+        self._elements.append(value)
         return True
 
-    def remove(self, element: int) -> bool:
-        if isinstance(element, int) and element in self._elements:
-            self._elements.remove(element)
+    def remove(self, value: int) -> bool:
+        if isinstance(value, int) and value in self._elements:
+            self._elements.remove(value)
             return True
         return False
 
-    def contains(self, element: int) -> bool:
-        return isinstance(element, int) and element in self._elements
+    def contains(self, value: int) -> bool:
+        return isinstance(value, int) and value in self._elements
 
     def union(self, other: "LimitedSet") -> "LimitedSet":
         if not isinstance(other, LimitedSet):
             raise TypeError(f"Expected LimitedSet, got {type(other).__name__}")
 
         combined_elements = list(set(self._elements + other._elements))
-        total_capacity = self._capacity + other._capacity
+        total_capacity = self.capacity + other.capacity
 
         if len(combined_elements) > total_capacity:
             raise ValueError("Combined unique elements exceed total capacity")
@@ -77,14 +77,14 @@ class LimitedSet:
             raise TypeError(f"Expected LimitedSet, got {type(other).__name__}")
 
         common_elements = [x for x in self._elements if x in other._elements]
-        return LimitedSet(min(self._capacity, other._capacity), common_elements)
+        return LimitedSet(min(self.capacity, other.capacity), common_elements)
 
     def difference(self, other: "LimitedSet") -> "LimitedSet":
         if not isinstance(other, LimitedSet):
             raise TypeError(f"Expected LimitedSet, got {type(other).__name__}")
 
         diff_elements = [x for x in self._elements if x not in other._elements]
-        return LimitedSet(self._capacity, diff_elements)
+        return LimitedSet(self.capacity, diff_elements)
 
     def is_subset(self, other: "LimitedSet") -> bool:
         if not isinstance(other, LimitedSet):
@@ -96,14 +96,14 @@ class LimitedSet:
         return self.size == 0
 
     def is_full(self) -> bool:
-        return self.size == self._capacity
+        return self.size == self.capacity
 
     def clear(self) -> None:
         self._elements.clear()
 
     def display(self) -> None:
         elements_str = ", ".join(map(str, self._elements)) if self._elements else "empty"
-        print(f"{{{elements_str}}} [{self.size}/{self._capacity}]")
+        print(f"{{{elements_str}}} [{self.size}/{self.capacity}]")
 
     def to_list(self) -> List[int]:
         return self._elements.copy()
@@ -113,7 +113,7 @@ class LimitedSet:
 
     def __str__(self) -> str:
         elements_str = ", ".join(map(str, self._elements)) if self._elements else "empty"
-        return f"LimitedSet({{{elements_str}}}, {self.size}/{self._capacity})"
+        return f"LimitedSet({{{elements_str}}}, {self.size}/{self.capacity})"
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -129,8 +129,8 @@ class LimitedSet:
     def __len__(self) -> int:
         return self.size
 
-    def __contains__(self, element: int) -> bool:
-        return self.contains(element)
+    def __contains__(self, value: int) -> bool:
+        return self.contains(value)
 
     def __iter__(self):
         return iter(self._elements)
@@ -175,5 +175,5 @@ if __name__ == "__main__":
 
     print(f"Elements: {list(s4)}")
 
-    for element in s4:
-        print(f"Element: {element}")
+    for item in s4:
+        print(f"Element: {item}")

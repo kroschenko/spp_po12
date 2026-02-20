@@ -2,7 +2,8 @@ class LimitedSet:
     def __init__(self, capacity, items=None):
         if capacity <= 0:
             raise ValueError("Moshnost > 0")
-        self._cap, self._items = capacity, []
+        self._cap = capacity
+        self._items = []
         if items:
             unique = []
             for x in items:
@@ -42,26 +43,29 @@ class LimitedSet:
     def union(self, other):
         if not isinstance(other, LimitedSet):
             raise TypeError("Waiting LimitedSet")
+
         unique = list(set(self._items + other._items))
-        if len(unique) > self._cap + other._cap:
+        total_capacity = self.cap + other.cap
+
+        if len(unique) > total_capacity:
             raise ValueError("Dont have any space")
-        return LimitedSet(self._cap + other._cap, unique)
+
+        return LimitedSet(total_capacity, unique)
 
     def display(self):
-        print(f"Elements: {', '.join(map(str, self._items)) if self._items else 'пусто'} [{self.size}/{self._cap}]")
+        print(f"Elements: {', '.join(map(str, self._items)) if self._items else 'пусто'} [{self.size}/{self.cap}]")
 
     def __str__(self):
-        return (
-            f"LimitedSet({{{', '.join(map(str, self._items))}}}, {self.size}/{self._cap})"
-            if self._items
-            else f"LimitedSet(empty, {self._cap})"
-        )
+        if self._items:
+            return f"LimitedSet({{{', '.join(map(str, self._items))}}}, {self.size}/{self.cap})"
+        return f"LimitedSet(empty, {self.cap})"
 
     def __eq__(self, other):
-        return isinstance(other, LimitedSet) and set(self._items) == set(other._items)
+        if not isinstance(other, LimitedSet):
+            return False
+        return set(self._items) == set(other._items)
 
 
-# Пример
 if __name__ == "__main__":
     s1 = LimitedSet(5, [1, 2, 3])
     s2 = LimitedSet(3)
@@ -74,4 +78,4 @@ if __name__ == "__main__":
     print(s1)
     s3 = s1.union(s2)
     print(f"Union: {s3}")
-    print(f"Equals? {s1 == LimitedSet(5, [1,3])}")
+    print(f"Equals? {s1 == LimitedSet(5, [1, 3])}")
