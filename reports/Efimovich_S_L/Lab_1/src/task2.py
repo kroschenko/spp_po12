@@ -96,11 +96,7 @@ class Catalog(Searchable):
         self.books.append(b)
 
     def search(self, q):
-        return [
-            b
-            for b in self.books
-            if q.lower() in b.title.lower() or q.lower() in b.author.lower()
-        ]
+        return [b for b in self.books if q.lower() in b.title.lower() or q.lower() in b.author.lower()]
 
     def get(self, id):
         return next((b for b in self.books if b.id == id), None)
