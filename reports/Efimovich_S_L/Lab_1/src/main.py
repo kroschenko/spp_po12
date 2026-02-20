@@ -48,7 +48,9 @@ class LimitedSet:
         return LimitedSet(self._cap + other._cap, unique)
 
     def display(self):
-        print(f"Elements: {', '.join(map(str, self._items)) if self._items else 'пусто'} [{self.size}/{self._cap}]")
+        print(
+            f"Elements: {', '.join(map(str, self._items)) if self._items else 'пусто'} [{self.size}/{self._cap}]"
+        )
 
     def __str__(self):
         return (

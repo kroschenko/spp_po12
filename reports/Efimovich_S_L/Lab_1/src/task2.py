@@ -1,176 +1,183 @@
-from abc import ABC, abstractmethod
-from enum import Enum
+from typing import List, Optional, Set, Union, Iterable
 
 
-class BookStatus(Enum):
-    AVAILABLE = 1
-    ISSUED = 2
+class LimitedSet:
+    def __init__(self, capacity: int, items: Optional[Iterable[int]] = None):
+        if capacity <= 0:
+            raise ValueError("Capacity must be positive")
 
+        self._capacity = capacity
+        self._elements: List[int] = []
 
-class BookType(Enum):
-    ABONEMENT = 1
-    READING_ROOM = 2
+        if items is not None:
+            unique_items = self._get_unique_integers(items)
 
+            if len(unique_items) > capacity:
+                raise ValueError("Number of unique items exceeds capacity")
 
-class Entity(ABC):
-    def __init__(self, id):
-        self.id = id
+            self._elements = list(unique_items)
 
+    @staticmethod
+    def _get_unique_integers(items: Iterable[int]) -> Set[int]:
+        unique = set()
+        for item in items:
+            if not isinstance(item, int):
+                raise TypeError(f"Expected integer, got {type(item).__name__}")
+            unique.add(item)
+        return unique
 
-class Searchable(ABC):
-    @abstractmethod
-    def search(self, q):
-        pass
+    @property
+    def capacity(self) -> int:
+        return self._capacity
 
+    @property
+    def size(self) -> int:
+        return len(self._elements)
 
-class Book(Entity):
-    def __init__(self, id, t, a):
-        super().__init__(id)
-        self.title = t
-        self.author = a
-        self.status = BookStatus.AVAILABLE
-        self.type = None
+    @property
+    def elements(self) -> List[int]:
+        return self._elements.copy()
 
+    def add(self, element: int) -> bool:
+        if not isinstance(element, int):
+            raise TypeError(f"Expected integer, got {type(element).__name__}")
 
-class Reader(Entity):
-    def __init__(self, id, n):
-        super().__init__(id)
-        self.name = n
-        self.blacklisted = False
-        self.books = []
+        if element in self._elements:
+            return False
 
-    def borrow(self, b):
-        if self.blacklisted:
-            raise Exception("IN WL")
-        if b.status != BookStatus.AVAILABLE:
-            raise Exception("Nedostupno")
-        self.books.append(b)
-        b.status = BookStatus.ISSUED
+        if self.size >= self._capacity:
+            raise OverflowError(f"Set is at full capacity ({self._capacity})")
 
-    def ret(self, b):
-        if b in self.books:
-            self.books.remove(b)
-            b.status = BookStatus.AVAILABLE
+        self._elements.append(element)
+        return True
+
+    def remove(self, element: int) -> bool:
+        if isinstance(element, int) and element in self._elements:
+            self._elements.remove(element)
             return True
         return False
 
+    def contains(self, element: int) -> bool:
+        return isinstance(element, int) and element in self._elements
 
-class Librarian(Entity):
-    def __init__(self, id, n):
-        super().__init__(id)
-        self.name = n
+    def union(self, other: "LimitedSet") -> "LimitedSet":
+        if not isinstance(other, LimitedSet):
+            raise TypeError(f"Expected LimitedSet, got {type(other).__name__}")
 
-    def issue(self, r, b, t):
-        if b.status != BookStatus.AVAILABLE:
-            raise Exception("Nedostupno")
-        b.type = t
-        r.borrow(b)
-        return f"{self.name} print {b.title} {r.name}"
+        combined_elements = list(set(self._elements + other._elements))
+        total_capacity = self._capacity + other._capacity
 
+        if len(combined_elements) > total_capacity:
+            raise ValueError("Combined unique elements exceed total capacity")
 
-class Admin(Entity):
-    def __init__(self, id, n):
-        super().__init__(id)
-        self.name = n
+        return LimitedSet(total_capacity, combined_elements)
 
-    def bl_add(self, r):
-        r.blacklisted = True
+    def intersection(self, other: "LimitedSet") -> "LimitedSet":
+        if not isinstance(other, LimitedSet):
+            raise TypeError(f"Expected LimitedSet, got {type(other).__name__}")
 
-    def bl_rem(self, r):
-        r.blacklisted = False
+        common_elements = [x for x in self._elements if x in other._elements]
+        return LimitedSet(min(self._capacity, other._capacity), common_elements)
 
+    def difference(self, other: "LimitedSet") -> "LimitedSet":
+        if not isinstance(other, LimitedSet):
+            raise TypeError(f"Expected LimitedSet, got {type(other).__name__}")
 
-class Order:
-    def __init__(self, id, r, b):
-        self.id = id
-        self.reader = r
-        self.book = b
-        self.done = False
+        diff_elements = [x for x in self._elements if x not in other._elements]
+        return LimitedSet(self._capacity, diff_elements)
 
+    def is_subset(self, other: "LimitedSet") -> bool:
+        if not isinstance(other, LimitedSet):
+            raise TypeError(f"Expected LimitedSet, got {type(other).__name__}")
 
-class Catalog(Searchable):
-    def __init__(self):
-        self.books = []
+        return all(x in other._elements for x in self._elements)
 
-    def add(self, b):
-        self.books.append(b)
+    def is_empty(self) -> bool:
+        return self.size == 0
 
-    def search(self, q):
-        return [b for b in self.books if q.lower() in b.title.lower() or q.lower() in b.author.lower()]
+    def is_full(self) -> bool:
+        return self.size == self._capacity
 
-    def get(self, id):
-        return next((b for b in self.books if b.id == id), None)
+    def clear(self) -> None:
+        self._elements.clear()
 
+    def display(self) -> None:
+        elements_str = (
+            ", ".join(map(str, self._elements)) if self._elements else "empty"
+        )
+        print(f"{{{elements_str}}} [{self.size}/{self._capacity}]")
 
-class Library:
-    def __init__(self):
-        self.cat = Catalog()
-        self.readers = []
-        self.libs = []
-        self.admins = []
-        self.orders = []
+    def to_list(self) -> List[int]:
+        return self._elements.copy()
 
-    def add_r(self, r):
-        self.readers.append(r)
+    def to_set(self) -> Set[int]:
+        return set(self._elements)
 
-    def add_l(self, l):
-        self.libs.append(l)
+    def __str__(self) -> str:
+        elements_str = (
+            ", ".join(map(str, self._elements)) if self._elements else "empty"
+        )
+        return f"LimitedSet({{{elements_str}}}, {self.size}/{self._capacity})"
 
-    def add_a(self, a):
-        self.admins.append(a)
+    def __repr__(self) -> str:
+        return self.__str__()
 
-    def ord(self, r, b):
-        if r.blacklisted:
-            raise Exception("IN WL")
-        if b.status != BookStatus.AVAILABLE:
-            raise Exception("Nedostupno")
-        o = Order(len(self.orders) + 1, r, b)
-        self.orders.append(o)
-        return o
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, LimitedSet):
+            return False
+        return set(self._elements) == set(other._elements)
 
-    def proc(self, o, l, t):
-        if o.done:
-            raise Exception("Already completed")
-        r = l.issue(o.reader, o.book, t)
-        o.done = True
-        return r
+    def __ne__(self, other: object) -> bool:
+        return not self.__eq__(other)
+
+    def __len__(self) -> int:
+        return self.size
+
+    def __contains__(self, element: int) -> bool:
+        return self.contains(element)
+
+    def __iter__(self):
+        return iter(self._elements)
+
+    def __add__(self, other: "LimitedSet") -> "LimitedSet":
+        return self.union(other)
+
+    def __sub__(self, other: "LimitedSet") -> "LimitedSet":
+        return self.difference(other)
+
+    def __and__(self, other: "LimitedSet") -> "LimitedSet":
+        return self.intersection(other)
+
+    def __or__(self, other: "LimitedSet") -> "LimitedSet":
+        return self.union(other)
 
 
 if __name__ == "__main__":
-    lib = Library()
-    b1 = Book(1, "War and peace", "Tolstoi")
-    b2 = Book(2, "Prestuplenie", "Dostoevski")
-    b3 = Book(3, "Master", "Bulgagov")
-    for b in [b1, b2, b3]:
-        lib.cat.add(b)
-    lib.add_l(Librarian(1, "Anna"))
-    lib.add_a(Admin(1, "Ivan"))
-    r1 = Reader(1, "Petr")
-    r2 = Reader(2, "Maria")
-    lib.add_r(r1)
-    lib.add_r(r2)
+    s1 = LimitedSet(5, [1, 2, 3])
+    s2 = LimitedSet(3)
+    s2.add(10)
+    s2.add(20)
 
-    print("Search:", [b.title for b in lib.cat.search("pre")])
-    o = lib.ord(r1, lib.cat.get(1))
-    print(f"Order: {o.id}")
-    print(lib.proc(o, lib.libs[0], BookType.ABONEMENT))
-    print(f"Books Petr: {[b.title for b in r1.books]}")
+    print(s1)
+    print(s2)
+    print(f"Contains 2? {2 in s1}")
 
-    try:
-        lib.ord(r2, b1)
-    except Exception as e:
-        print(f"Error: {e}")
+    s1.remove(2)
+    print(s1)
 
-    r1.ret(b1)
-    print("Book is returned")
-    lib.admins[0].bl_add(r2)
-    print(f"Maria in WL: {r2.blacklisted}")
-    try:
-        lib.ord(r2, b2)
-    except Exception as e:
-        print(f"Error: {e}")
+    s3 = s1 + s2
+    print(f"Union: {s3}")
 
-    lib.admins[0].bl_rem(r2)
-    o2 = lib.ord(r2, lib.cat.get(3))
-    print(lib.proc(o2, lib.libs[0], BookType.READING_ROOM))
-    print(f"All orders: {len(lib.orders)}")
+    print(f"Equals? {s1 == LimitedSet(5, [1, 3])}")
+
+    s4 = LimitedSet(3, [1, 2, 3])
+    s5 = LimitedSet(5, [2, 3, 4, 5])
+
+    print(f"Intersection: {s4 & s5}")
+    print(f"Difference: {s4 - s5}")
+    print(f"Is subset? {s4.is_subset(s5)}")
+
+    print(f"Elements: {list(s4)}")
+
+    for element in s4:
+        print(f"Element: {element}")
