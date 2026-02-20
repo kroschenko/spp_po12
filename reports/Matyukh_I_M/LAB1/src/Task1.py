@@ -46,7 +46,9 @@ def main():
             print(f"\nРезультат: {sequence}")
             print(f"Количество элементов: {len(sequence)}")
 
-            again = input("\nХотите создать другую последовательность? (да/нет): ").lower()
+            again = input(
+                "\nХотите создать другую последовательность? (да/нет): "
+            ).lower()
             if again != "да" and again != "yes" and again != "y":
                 print("Программа завершена.")
                 break
