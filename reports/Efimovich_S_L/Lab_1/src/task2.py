@@ -41,9 +41,9 @@ class Reader(Entity):
 
     def borrow(self, b):
         if self.blacklisted:
-            raise Exception("В ЧС")
+            raise Exception("IN WL")
         if b.status != BookStatus.AVAILABLE:
-            raise Exception("Недоступна")
+            raise Exception("Nedostupno")
         self.books.append(b)
         b.status = BookStatus.ISSUED
 
@@ -62,10 +62,10 @@ class Librarian(Entity):
 
     def issue(self, r, b, t):
         if b.status != BookStatus.AVAILABLE:
-            raise Exception("Недоступна")
+            raise Exception("Nedostupno")
         b.type = t
         r.borrow(b)
-        return f"{self.name} выдал {b.title} {r.name}"
+        return f"{self.name} print {b.title} {r.name}"
 
 
 class Admin(Entity):
@@ -121,16 +121,16 @@ class Library:
 
     def ord(self, r, b):
         if r.blacklisted:
-            raise Exception("В ЧС")
+            raise Exception("IN WL")
         if b.status != BookStatus.AVAILABLE:
-            raise Exception("Недоступна")
+            raise Exception("Nedostupno")
         o = Order(len(self.orders) + 1, r, b)
         self.orders.append(o)
         return o
 
     def proc(self, o, l, t):
         if o.done:
-            raise Exception("Уже выполнен")
+            raise Exception("Already completed")
         r = l.issue(o.reader, o.book, t)
         o.done = True
         return r
@@ -138,39 +138,39 @@ class Library:
 
 if __name__ == "__main__":
     lib = Library()
-    b1 = Book(1, "Война и мир", "Толстой")
-    b2 = Book(2, "Преступление", "Достоевский")
-    b3 = Book(3, "Мастер", "Булгаков")
+    b1 = Book(1, "War and peace", "Tolstoi")
+    b2 = Book(2, "Prestuplenie", "Dostoevski")
+    b3 = Book(3, "Master", "Bulgagov")
     for b in [b1, b2, b3]:
         lib.cat.add(b)
-    lib.add_l(Librarian(1, "Анна"))
-    lib.add_a(Admin(1, "Иван"))
-    r1 = Reader(1, "Петр")
-    r2 = Reader(2, "Мария")
+    lib.add_l(Librarian(1, "Anna"))
+    lib.add_a(Admin(1, "Ivan"))
+    r1 = Reader(1, "Petr")
+    r2 = Reader(2, "Maria")
     lib.add_r(r1)
     lib.add_r(r2)
 
-    print("Поиск:", [b.title for b in lib.cat.search("пре")])
+    print("Search:", [b.title for b in lib.cat.search("pre")])
     o = lib.ord(r1, lib.cat.get(1))
-    print(f"Заказ: {o.id}")
+    print(f"Order: {o.id}")
     print(lib.proc(o, lib.libs[0], BookType.ABONEMENT))
-    print(f"Книги Петра: {[b.title for b in r1.books]}")
+    print(f"Books Petr: {[b.title for b in r1.books]}")
 
     try:
         lib.ord(r2, b1)
     except Exception as e:
-        print(f"Ошибка: {e}")
+        print(f"Error: {e}")
 
     r1.ret(b1)
-    print("Книга возвращена")
+    print("Book is returned")
     lib.admins[0].bl_add(r2)
-    print(f"Мария в ЧС: {r2.blacklisted}")
+    print(f"Maria in WL: {r2.blacklisted}")
     try:
         lib.ord(r2, b2)
     except Exception as e:
-        print(f"Ошибка: {e}")
+        print(f"Error: {e}")
 
     lib.admins[0].bl_rem(r2)
     o2 = lib.ord(r2, lib.cat.get(3))
     print(lib.proc(o2, lib.libs[0], BookType.READING_ROOM))
-    print(f"Всего заказов: {len(lib.orders)}")
+    print(f"All orders: {len(lib.orders)}")

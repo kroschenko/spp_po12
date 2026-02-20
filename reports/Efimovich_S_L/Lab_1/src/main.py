@@ -1,7 +1,7 @@
 class LimitedSet:
     def __init__(self, capacity, items=None):
         if capacity <= 0:
-            raise ValueError("Мощность > 0")
+            raise ValueError("Moshnost > 0")
         self._cap, self._items = capacity, []
         if items:
             unique = []
@@ -9,7 +9,7 @@ class LimitedSet:
                 if isinstance(x, int) and x not in unique:
                     unique.append(x)
             if len(unique) > capacity:
-                raise ValueError("Превышение мощности")
+                raise ValueError("Previshenie moshnosti")
             self._items = unique
 
     @property
@@ -22,11 +22,11 @@ class LimitedSet:
 
     def add(self, x):
         if not isinstance(x, int):
-            raise TypeError("Нужно целое")
+            raise TypeError("Need cheloe")
         if x in self._items:
             return False
         if len(self._items) >= self._cap:
-            raise OverflowError("Множество полно")
+            raise OverflowError("Mnosestvo polno")
         self._items.append(x)
         return True
 
@@ -41,20 +41,20 @@ class LimitedSet:
 
     def union(self, other):
         if not isinstance(other, LimitedSet):
-            raise TypeError("Ожидается LimitedSet")
+            raise TypeError("Waiting LimitedSet")
         unique = list(set(self._items + other._items))
         if len(unique) > self._cap + other._cap:
-            raise ValueError("Не хватит места")
+            raise ValueError("Dont have any space")
         return LimitedSet(self._cap + other._cap, unique)
 
     def display(self):
-        print(f"Элементы: {', '.join(map(str, self._items)) if self._items else 'пусто'} [{self.size}/{self._cap}]")
+        print(f"Elements: {', '.join(map(str, self._items)) if self._items else 'пусто'} [{self.size}/{self._cap}]")
 
     def __str__(self):
         return (
             f"LimitedSet({{{', '.join(map(str, self._items))}}}, {self.size}/{self._cap})"
             if self._items
-            else f"LimitedSet(пусто, {self._cap})"
+            else f"LimitedSet(empty, {self._cap})"
         )
 
     def __eq__(self, other):
@@ -69,9 +69,9 @@ if __name__ == "__main__":
     s2.add(20)
     print(s1)
     print(s2)
-    print(f"Содержит 2? {s1.contains(2)}")
+    print(f"Contains 2? {s1.contains(2)}")
     s1.remove(2)
     print(s1)
     s3 = s1.union(s2)
-    print(f"Объединение: {s3}")
-    print(f"Равны? {s1 == LimitedSet(5, [1,3])}")
+    print(f"Union: {s3}")
+    print(f"Equals? {s1 == LimitedSet(5, [1,3])}")
