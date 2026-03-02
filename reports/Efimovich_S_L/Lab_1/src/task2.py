@@ -1,16 +1,16 @@
-from typing import List, Optional, Set, Iterable
+from typing import List, Optional, Set, Iterable, Union
 
 
 class LimitedSet:
-    def __init__(self, capacity: int, items: Optional[Iterable[int]] = None):
+    def __init__(self, capacity: int, initial_items: Optional[Iterable[int]] = None):
         if capacity <= 0:
             raise ValueError("Capacity must be positive")
 
         self._capacity = capacity
         self._elements: List[int] = []
 
-        if items is not None:
-            unique_items = self._get_unique_integers(items)
+        if initial_items is not None:
+            unique_items = self._get_unique_integers(initial_items)
 
             if len(unique_items) > capacity:
                 raise ValueError("Number of unique items exceeds capacity")
@@ -64,7 +64,7 @@ class LimitedSet:
         if not isinstance(other, LimitedSet):
             raise TypeError(f"Expected LimitedSet, got {type(other).__name__}")
 
-        combined_elements = list(set(self._elements + other._elements))
+        combined_elements = list(set(self.elements + other.elements))
         total_capacity = self.capacity + other.capacity
 
         if len(combined_elements) > total_capacity:
@@ -76,21 +76,21 @@ class LimitedSet:
         if not isinstance(other, LimitedSet):
             raise TypeError(f"Expected LimitedSet, got {type(other).__name__}")
 
-        common_elements = [x for x in self._elements if x in other._elements]
+        common_elements = [x for x in self.elements if x in other.elements]
         return LimitedSet(min(self.capacity, other.capacity), common_elements)
 
     def difference(self, other: "LimitedSet") -> "LimitedSet":
         if not isinstance(other, LimitedSet):
             raise TypeError(f"Expected LimitedSet, got {type(other).__name__}")
 
-        diff_elements = [x for x in self._elements if x not in other._elements]
+        diff_elements = [x for x in self.elements if x not in other.elements]
         return LimitedSet(self.capacity, diff_elements)
 
     def is_subset(self, other: "LimitedSet") -> bool:
         if not isinstance(other, LimitedSet):
             raise TypeError(f"Expected LimitedSet, got {type(other).__name__}")
 
-        return all(x in other._elements for x in self._elements)
+        return all(x in other.elements for x in self.elements)
 
     def is_empty(self) -> bool:
         return self.size == 0
@@ -102,7 +102,7 @@ class LimitedSet:
         self._elements.clear()
 
     def display(self) -> None:
-        elements_str = ", ".join(map(str, self._elements)) if self._elements else "empty"
+        elements_str = (", ".join(map(str, self._elements)) if self._elements else "empty")
         print(f"{{{elements_str}}} [{self.size}/{self.capacity}]")
 
     def to_list(self) -> List[int]:
@@ -112,7 +112,7 @@ class LimitedSet:
         return set(self._elements)
 
     def __str__(self) -> str:
-        elements_str = ", ".join(map(str, self._elements)) if self._elements else "empty"
+        elements_str = (", ".join(map(str, self._elements)) if self._elements else "empty")
         return f"LimitedSet({{{elements_str}}}, {self.size}/{self.capacity})"
 
     def __repr__(self) -> str:
@@ -121,7 +121,8 @@ class LimitedSet:
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, LimitedSet):
             return False
-        return set(self._elements) == set(other._elements)
+
+        return self.to_set() == other.to_set()
 
     def __ne__(self, other: object) -> bool:
         return not self.__eq__(other)
@@ -149,31 +150,31 @@ class LimitedSet:
 
 
 if __name__ == "__main__":
-    s1 = LimitedSet(5, [1, 2, 3])
-    s2 = LimitedSet(3)
-    s2.add(10)
-    s2.add(20)
+    set1 = LimitedSet(5, [1, 2, 3])
+    set2 = LimitedSet(3)
+    set2.add(10)
+    set2.add(20)
 
-    print(s1)
-    print(s2)
-    print(f"Contains 2? {2 in s1}")
+    print(set1)
+    print(set2)
+    print(f"Contains 2? {2 in set1}")
 
-    s1.remove(2)
-    print(s1)
+    set1.remove(2)
+    print(set1)
 
-    s3 = s1 + s2
-    print(f"Union: {s3}")
+    set3 = set1 + set2
+    print(f"Union: {set3}")
 
-    print(f"Equals? {s1 == LimitedSet(5, [1, 3])}")
+    print(f"Equals? {set1 == LimitedSet(5, [1, 3])}")
 
-    s4 = LimitedSet(3, [1, 2, 3])
-    s5 = LimitedSet(5, [2, 3, 4, 5])
+    set4 = LimitedSet(3, [1, 2, 3])
+    set5 = LimitedSet(5, [2, 3, 4, 5])
 
-    print(f"Intersection: {s4 & s5}")
-    print(f"Difference: {s4 - s5}")
-    print(f"Is subset? {s4.is_subset(s5)}")
+    print(f"Intersection: {set4 & set5}")
+    print(f"Difference: {set4 - set5}")
+    print(f"Is subset? {set4.is_subset(set5)}")
 
-    print(f"Elements: {list(s4)}")
+    print(f"Elements: {list(set4)}")
 
-    for items in s4:
-        print(f"Element: {items}")
+    for item in set4:
+        print(f"Element: {item}")
