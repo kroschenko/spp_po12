@@ -1,4 +1,5 @@
 """Simple hospital domain model with staff, patients and prescriptions."""
+
 # pylint: disable=too-few-public-methods
 
 from __future__ import annotations
