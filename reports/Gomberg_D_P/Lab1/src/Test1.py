@@ -2,9 +2,11 @@ def find_mode(sequence):
     if not sequence:
         return None
 
+    # Считаем частоту каждого уникального элемента
     counts = {x: sequence.count(x) for x in set(sequence)}
     max_freq = max(counts.values())
 
+    # Проверка на отсутствие моды (если все элементы встречаются одинаково часто)
     if all(count == max_freq for count in counts.values()):
         return None
 
