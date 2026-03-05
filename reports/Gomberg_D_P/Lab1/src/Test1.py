@@ -1,16 +1,15 @@
-from collections import Counter
-
-
 def find_mode(sequence):
-    counts = Counter(sequence)
-    max_count = max(counts.values())
-
-    if list(counts.values()).count(max_count) == len(counts):
+    if not sequence:
         return None
 
-    modes = [num for num, freq in counts.items() if freq == max_count]
-    return modes
+    counts = {x: sequence.count(x) for x in set(sequence)}
+    max_freq = max(counts.values())
+
+    if all(count == max_freq for count in counts.values()):
+        return None
+
+    return [item for item, freq in counts.items() if freq == max_freq]
 
 
-seq = [1, 2, 2, 3, 3, 5, 3]
+seq = [1, 2, 2, 3, 3, 5]
 print(find_mode(seq))

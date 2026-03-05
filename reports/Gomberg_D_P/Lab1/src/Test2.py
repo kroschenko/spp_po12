@@ -1,14 +1,18 @@
-def str_str(haystack, needle):
-    if needle == "":
+def str_str(haystack: str, needle: str) -> int:
+
+    if not needle:
         return 0
 
-    for i in range(len(haystack) - len(needle) + 1):
-        if haystack[i : i + len(needle)] == needle:
+    n, m = len(haystack), len(needle)
+
+    for i in range(n - m + 1):
+        for j in range(m):
+            if haystack[i + j] != needle[j]:
+                break
+        else:
             return i
 
     return -1
 
 
-haystack = input("Enter a string: ")
-needle = input("Enter a string: ")
-print(str_str(haystack, needle))
+print(str_str("fadssadbutsad", "sad"))  # Output: 0
