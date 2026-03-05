@@ -1,15 +1,15 @@
-from collections import Counter
-
-
 def find_mode(sequence):
-    counts = Counter(sequence)
-    max_count = max(counts.values())
+    if not sequence: return None
 
-    if list(counts.values()).count(max_count) == len(counts):
+    # Считаем частоту каждого уникального элемента
+    counts = {x: sequence.count(x) for x in set(sequence)}
+    max_freq = max(counts.values())
+
+    # Проверка на отсутствие моды (если все элементы встречаются одинаково часто)
+    if all(count == max_freq for count in counts.values()):
         return None
 
-    modes = [num for num, freq in counts.items() if freq == max_count]
-    return modes
+    return [item for item, freq in counts.items() if freq == max_freq]
 
 
 seq = [1, 2, 2, 3, 3, 5, 3]

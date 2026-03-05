@@ -1,14 +1,22 @@
-def str_str(haystack, needle):
-    if needle == "":
+def str_str(haystack: str, needle: str) -> int:
+    # Базовые проверки
+    if not needle:
         return 0
 
-    for i in range(len(haystack) - len(needle) + 1):
-        if haystack[i : i + len(needle)] == needle:
+    n, m = len(haystack), len(needle)
+
+    # Проходим по основной строке
+    for i in range(n - m + 1):
+        # Вместо создания среза [i:i+m], проверяем символы по одному
+        for j in range(m):
+            if haystack[i + j] != needle[j]:
+                break
+        else:
+            # Если цикл for не был прерван по break, значит нашли совпадение
             return i
 
     return -1
 
 
-haystack = input("Enter a string: ")
-needle = input("Enter a string: ")
-print(str_str(haystack, needle))
+# Тест
+print(str_str("ffsadbutsad", "sad"))  # Output: 0
