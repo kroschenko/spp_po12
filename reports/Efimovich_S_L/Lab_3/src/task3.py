@@ -33,9 +33,11 @@ class ATMState:
         print("Операция недоступна в текущем режиме")
 
     def enter_pin(self, pin):
+        pin = 1
         print("Операция недоступна в текущем режиме")
 
     def withdraw(self, amount):
+        amount = 1
         print("Операция недоступна в текущем режиме")
 
     def cancel(self):
@@ -119,28 +121,28 @@ class BlockedState(ATMState):
 
 
 if __name__ == "__main__":
-    atm = ATM("ATM-001", 50000)
+    atmClass = ATM("ATM-001", 50000)
 
-    print(f"Банкомат {atm.id} запущен. Денег: {atm.total_money}")
+    print(f"Банкомат {atmClass.id} запущен. Денег: {atmClass.total_money}")
     print("-" * 40)
 
-    atm.insert_card()
-    atm.enter_pin("1111")
-    atm.enter_pin("2222")
-    atm.enter_pin("1234")
+    atmClass.insert_card()
+    atmClass.enter_pin("1111")
+    atmClass.enter_pin("2222")
+    atmClass.enter_pin("1234")
 
-    atm.withdraw(5000)
-    atm.withdraw(20000)
-    atm.withdraw(30000)
+    atmClass.withdraw(5000)
+    atmClass.withdraw(20000)
+    atmClass.withdraw(30000)
 
-    atm.cancel()
-    print(f"Состояние: {atm.get_state_name()}")
+    atmClass.cancel()
+    print(f"Состояние: {atmClass.get_state_name()}")
 
     print("\n" + "-" * 40)
     print("Тест блокировки при отсутствии денег:")
 
-    atm.insert_card()
-    atm.enter_pin("1234")
-    atm.withdraw(25000)
-    atm.withdraw(1000)
-    atm.cancel()
+    atmClass.insert_card()
+    atmClass.enter_pin("1234")
+    atmClass.withdraw(25000)
+    atmClass.withdraw(1000)
+    atmClass.cancel()

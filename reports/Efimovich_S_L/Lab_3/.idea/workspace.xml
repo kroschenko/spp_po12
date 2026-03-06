@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bd4dc97d-f688-4863-ad28-9df7b19235e3" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../Lab_2/src/task2.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Lab_2/src/task2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/task3.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/task3.py" afterDir="false" />
     </list>
