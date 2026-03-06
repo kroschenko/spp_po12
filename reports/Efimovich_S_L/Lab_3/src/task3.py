@@ -33,12 +33,10 @@ class ATMState:
         print("Операция недоступна в текущем режиме")
 
     def enter_pin(self, pin):
-        pin = 1
-        print("Операция недоступна в текущем режиме")
+        print(f"Операция недоступна в текущем режиме {pin}")
 
     def withdraw(self, amount):
-        amount = 1
-        print("Операция недоступна в текущем режиме")
+        print(f"Операция недоступна в текущем режиме {amount}")
 
     def cancel(self):
         print("Операция недоступна в текущем режиме")
