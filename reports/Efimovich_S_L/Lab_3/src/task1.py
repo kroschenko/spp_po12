@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 class Smartphone:
 
-    def __init__(self, model, processor, display, camera, body):
+    def __init__(self, *, model, processor, display, camera, body):
         self.model = model
         self.processor = processor
         self.display = display

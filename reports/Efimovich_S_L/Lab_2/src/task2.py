@@ -1,4 +1,4 @@
-from typing import List, Optional, Set, Iterable, Union
+from typing import List, Optional, Set, Iterable
 
 
 class LimitedSet:
@@ -176,5 +176,5 @@ if __name__ == "__main__":
 
     print(f"Elements: {list(set4)}")
 
-    for item in set4:
-        print(f"Element: {item}")
+    for element_item in set4:
+        print(f"Element: {element_item}")
