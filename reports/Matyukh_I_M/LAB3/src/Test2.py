@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 class PassportSystem:
-
     def __init__(self, full_name, birth_date, passport_number, issue_date, issued_by):
         self.full_name = full_name
         self.birth_date = birth_date
@@ -20,11 +19,7 @@ class PassportSystem:
             "issued_by": self.issued_by,
         }
 
-    def verify_passport(self):
-        return True
-
     def display_passport(self):
-
         data = self.get_passport_data()
         return f"""
 ┌───────────────────── ПАСПОРТ РФ ─────────────────────┐
@@ -38,7 +33,6 @@ class PassportSystem:
 
 
 class InsuranceSystem:
-
     def __init__(self, policy_number, company, valid_until):
         self.policy_number = policy_number
         self.company = company
@@ -71,7 +65,6 @@ class InsuranceSystem:
 
 
 class BankCardSystem:
-
     def __init__(self, card_number, owner_name, expiry_date, initial_balance):
         self.card_number = card_number
         self.owner_name = owner_name
@@ -92,8 +85,7 @@ class BankCardSystem:
             self.balance -= amount
             self.transactions.append(f"-{amount} руб.")
             return True, f"Снято {amount} руб. Остаток: {self.balance} руб."
-        else:
-            return False, f"Недостаточно средств. Доступно: {self.balance} руб."
+        return False, f"Недостаточно средств. Доступно: {self.balance} руб."
 
     def deposit(self, amount):
         self.balance += amount
@@ -113,7 +105,6 @@ class BankCardSystem:
 
 
 class UniversalCardInterface(ABC):
-
     @abstractmethod
     def identify(self):
         pass
@@ -132,7 +123,6 @@ class UniversalCardInterface(ABC):
 
 
 class UniversalCard(UniversalCardInterface):
-
     def __init__(self, passport, insurance, bank_card):
         self._passport = passport
         self._insurance = insurance
@@ -149,8 +139,7 @@ class UniversalCard(UniversalCardInterface):
         success, message = self._bank_card.withdraw(amount)
         if success:
             return f"✅ {message}"
-        else:
-            return f"❌ {message}"
+        return f"❌ {message}"
 
     def show_insurance(self):
         print("\n🏥 МЕДИЦИНСКАЯ СТРАХОВКА:")
@@ -172,15 +161,13 @@ class UniversalCard(UniversalCardInterface):
         )
 
     def top_up_balance(self, amount):
-
         print(f"\n💰 ПОПОЛНЕНИЕ БАЛАНСА: +{amount} руб.")
         return self._bank_card.deposit(amount)
 
     def check_insurance_coverage(self, service):
         if self._insurance.check_coverage(service):
             return f"✅ Услуга '{service}' покрывается страховкой"
-        else:
-            return f"❌ Услуга '{service}' НЕ покрывается страховкой"
+        return f"❌ Услуга '{service}' НЕ покрывается страховкой"
 
 
 def input_passport_data():
@@ -219,74 +206,84 @@ def input_bank_card_data():
     return BankCardSystem(card_number, owner_name, expiry_date, initial_balance)
 
 
-def main():
+def input_all_data():
+    passport = input_passport_data()
+    insurance = input_insurance_data()
+    bank_card = input_bank_card_data()
+    return passport, insurance, bank_card
 
+
+def create_card(passport, insurance, bank_card):
+    card = UniversalCard(passport, insurance, bank_card)
+    print("\n" + "=" * 80)
+    print("✅ УНИВЕРСАЛЬНАЯ КАРТА УСПЕШНО СОЗДАНА!")
+    print("=" * 80)
+    print(card.get_full_info())
+    return card
+
+
+def show_menu():
+    print("\n" + "=" * 50)
+    print("ДОСТУПНЫЕ ОПЕРАЦИИ С КАРТОЙ:")
+    print("1. Идентификация личности")
+    print("2. Показать медицинскую страховку")
+    print("3. Проверить покрытие страховки")
+    print("4. Совершить платеж")
+    print("5. Пополнить баланс карты")
+    print("6. Показать полную информацию")
+    print("0. Выход")
+
+
+def process_menu_choice(card, choice):
+    if choice == "1":
+        print(card.identify())
+    elif choice == "2":
+        print(card.show_insurance())
+    elif choice == "3":
+        service = input("Введите тип медицинской услуги: ")
+        print(card.check_insurance_coverage(service))
+    elif choice == "4":
+        try:
+            amount = float(input("Введите сумму платежа: "))
+            print(card.pay(amount))
+        except ValueError:
+            print("Ошибка: введите число")
+    elif choice == "5":
+        try:
+            amount = float(input("Введите сумму пополнения: "))
+            print(card.top_up_balance(amount))
+        except ValueError:
+            print("Ошибка: введите число")
+    elif choice == "6":
+        print(card.get_full_info())
+    elif choice == "0":
+        return False
+    else:
+        print("Неверный выбор. Попробуйте снова.")
+    return True
+
+
+def run_card_menu(card):
+    while True:
+        show_menu()
+        choice = input("\nВыберите операцию (0-6): ")
+        if not process_menu_choice(card, choice):
+            break
+
+
+def main():
     print("=" * 80)
     print("ПРОГРАММА: УНИВЕРСАЛЬНАЯ ЭЛЕКТРОННАЯ КАРТА")
     print("=" * 80)
     print("\nДобро пожаловать в систему оформления универсальной карты!")
 
-    # Ввод данных пользователем
     print("\n" + "=" * 80)
     print("ЭТАП 1: ЗАПОЛНЕНИЕ ДАННЫХ ДЛЯ КАРТЫ")
     print("=" * 80)
 
-    passport = input_passport_data()
-    insurance = input_insurance_data()
-    bank_card = input_bank_card_data()
-
-    my_card = UniversalCard(passport, insurance, bank_card)
-
-    print("\n" + "=" * 80)
-    print("✅ УНИВЕРСАЛЬНАЯ КАРТА УСПЕШНО СОЗДАНА!")
-    print("=" * 80)
-    print(my_card.get_full_info())
-
-    while True:
-        print("\n" + "=" * 50)
-        print("ДОСТУПНЫЕ ОПЕРАЦИИ С КАРТОЙ:")
-        print("1. Идентификация личности")
-        print("2. Показать медицинскую страховку")
-        print("3. Проверить покрытие страховки")
-        print("4. Совершить платеж")
-        print("5. Пополнить баланс карты")
-        print("6. Показать полную информацию")
-        print("0. Выход")
-
-        choice = input("\nВыберите операцию (0-6): ")
-
-        if choice == "1":
-            print(my_card.identify())
-
-        elif choice == "2":
-            print(my_card.show_insurance())
-
-        elif choice == "3":
-            service = input("Введите тип медицинской услуги: ")
-            print(my_card.check_insurance_coverage(service))
-
-        elif choice == "4":
-            try:
-                amount = float(input("Введите сумму платежа: "))
-                print(my_card.pay(amount))
-            except ValueError:
-                print("Ошибка: введите число")
-
-        elif choice == "5":
-            try:
-                amount = float(input("Введите сумму пополнения: "))
-                print(my_card.top_up_balance(amount))
-            except ValueError:
-                print("Ошибка: введите число")
-
-        elif choice == "6":
-            print(my_card.get_full_info())
-
-        elif choice == "0":
-            break
-
-        else:
-            print("Неверный выбор. Попробуйте снова.")
+    passport, insurance, bank_card = input_all_data()
+    card = create_card(passport, insurance, bank_card)
+    run_card_menu(card)
 
     print("\n" + "=" * 80)
     print("СПАСИБО ЗА ИСПОЛЬЗОВАНИЕ УНИВЕРСАЛЬНОЙ КАРТЫ!")

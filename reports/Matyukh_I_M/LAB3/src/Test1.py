@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
-class Car(ABC):
 
+class Car(ABC):
     def __init__(self, model, engine, price):
         self.model = model
         self.engine = engine
@@ -16,7 +16,6 @@ class Car(ABC):
 
 
 class Sedan(Car):
-
     def get_description(self):
         return f"Седан {self.model}: комфортный городской автомобиль с двигателем {self.engine}"
 
@@ -33,7 +32,6 @@ class SUV(Car):
 
 
 class Hatchback(Car):
-
     def get_description(self):
         return f"Хэтчбек {self.model}: компактный и маневренный автомобиль с двигателем {self.engine}"
 
@@ -42,7 +40,6 @@ class Hatchback(Car):
 
 
 class CarFactory(ABC):
-
     @abstractmethod
     def create_sedan(self) -> Sedan:
         pass
@@ -61,7 +58,6 @@ class CarFactory(ABC):
 
 
 class VolkswagenFactory(CarFactory):
-
     def get_factory_name(self) -> str:
         return "Завод Volkswagen (Германия)"
 
@@ -76,7 +72,6 @@ class VolkswagenFactory(CarFactory):
 
 
 class ToyotaFactory(CarFactory):
-
     def get_factory_name(self) -> str:
         return "Завод Toyota (Япония)"
 
@@ -91,7 +86,6 @@ class ToyotaFactory(CarFactory):
 
 
 class TeslaFactory(CarFactory):
-
     def get_factory_name(self) -> str:
         return "Завод Tesla (США)"
 
@@ -116,12 +110,11 @@ def get_factory_choice():
             choice = int(input("\nВыберите завод (1-3): "))
             if choice == 1:
                 return VolkswagenFactory()
-            elif choice == 2:
+            if choice == 2:
                 return ToyotaFactory()
-            elif choice == 3:
+            if choice == 3:
                 return TeslaFactory()
-            else:
-                print("Ошибка: введите число от 1 до 3")
+            print("Ошибка: введите число от 1 до 3")
         except ValueError:
             print("Ошибка: введите число")
 
@@ -137,22 +130,21 @@ def get_car_type_choice():
             choice = int(input("\nВыберите тип автомобиля (1-3): "))
             if choice == 1:
                 return "sedan"
-            elif choice == 2:
+            if choice == 2:
                 return "suv"
-            elif choice == 3:
+            if choice == 3:
                 return "hatchback"
-            else:
-                print("Ошибка: введите число от 1 до 3")
+            print("Ошибка: введите число от 1 до 3")
         except ValueError:
             print("Ошибка: введите число")
 
 
-def order_car(factory: CarFactory, car_type: str):
-
+def process_order(factory, car_type):
     print(f"\n{'=' * 50}")
     print(f"ОФОРМЛЕНИЕ ЗАКАЗА НА {factory.get_factory_name()}")
     print("=" * 50)
 
+    car = None
     if car_type == "sedan":
         car = factory.create_sedan()
         print(f"\n✅ Вы выбрали: {car}")
@@ -169,8 +161,12 @@ def order_car(factory: CarFactory, car_type: str):
         print(car.get_description())
         print(car.park_easily())
 
-    print(f"\n💰 Итоговая стоимость: {car.price} руб.")
+    if car:
+        print(f"\n💰 Итоговая стоимость: {car.price} руб.")
+        confirm_purchase(car)
 
+
+def confirm_purchase(car):
     buy = input("\nХотите купить этот автомобиль? (да/нет): ").lower()
     if buy in ["да", "yes", "y", "д"]:
         print("\n🎉 ПОЗДРАВЛЯЕМ С ПОКУПКОЙ!")
@@ -178,26 +174,24 @@ def order_car(factory: CarFactory, car_type: str):
     else:
         print("\nЗаказ отменен.")
 
-    return car
+
+def should_continue():
+    again = input("\nХотите сделать еще один заказ? (да/нет): ").lower()
+    return again in ["да", "yes", "y", "д"]
 
 
 def main():
-
     print("=" * 70)
     print("ПРОГРАММА: ЗАВОДЫ ПО ПРОИЗВОДСТВУ АВТОМОБИЛЕЙ")
     print("=" * 70)
     print("\nДобро пожаловать в систему заказа автомобилей!")
 
     while True:
-
         factory = get_factory_choice()
-
         car_type = get_car_type_choice()
+        process_order(factory, car_type)
 
-        order_car(factory, car_type)
-
-        again = input("\nХотите сделать еще один заказ? (да/нет): ").lower()
-        if again not in ["да", "yes", "y", "д"]:
+        if not should_continue():
             break
 
     print("\n" + "=" * 70)
