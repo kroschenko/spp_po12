@@ -79,9 +79,9 @@ class FloatSet:
 
 def print_menu():
     """Меню."""
-    print("\n" + "=" * 40)
+    print("\n" + "="*40)
     print("МЕНЮ")
-    print("=" * 40)
+    print("="*40)
     print("1. Показать")
     print("2. Добавить")
     print("3. Удалить")
@@ -90,11 +90,11 @@ def print_menu():
     print("6. Сравнить")
     print("7. Новая")
     print("8. Выход")
-    print("-" * 40)
+    print("-"*40)
 
 
 def handle_show(s):
-    """Показать."""
+    """Показать множество."""
     print(f"\n{s}")
     print(f"Элементы: {', '.join(str(x) for x in sorted(s.elements))}")
     print(f"Количество: {len(s)}")
@@ -102,7 +102,7 @@ def handle_show(s):
 
 
 def handle_add(s):
-    """Добавить."""
+    """Добавить элемент."""
     try:
         val = float(input("Число: "))
         if s.add(val):
@@ -115,7 +115,7 @@ def handle_add(s):
 
 
 def handle_remove(s):
-    """Удалить."""
+    """Удалить элемент."""
     try:
         val = float(input("Число: "))
         if s.remove(val):
@@ -128,7 +128,7 @@ def handle_remove(s):
 
 
 def handle_contains(s):
-    """Проверить."""
+    """Проверить принадлежность."""
     try:
         val = float(input("Число: "))
         print(f"{val} {'есть' if val in s else 'нет'}")
@@ -138,7 +138,7 @@ def handle_contains(s):
 
 
 def get_other_set():
-    """Получить другое множество."""
+    """Получить другое множество из ввода."""
     vals = input("Числа через пробел: ").split()
     other = FloatSet()
     for v in vals:
@@ -150,7 +150,7 @@ def get_other_set():
 
 
 def handle_union(s):
-    """Объединить."""
+    """Объединить множества."""
     other = get_other_set()
     if len(other) == 0:
         return s
@@ -158,13 +158,13 @@ def handle_union(s):
     print(f"Второе: {other}")
     u = s.union(other)
     print(f"Результат: {u}")
-    if input("Заменить? (д/н): ").lower() in ["д", "да"]:
+    if input("Заменить? (д/н): ").lower() in ['д', 'да']:
         return u
     return s
 
 
 def handle_compare(s):
-    """Сравнить."""
+    """Сравнить множества."""
     other = get_other_set()
     print(f"Текущее: {s}")
     print(f"Другое: {other}")
@@ -173,40 +173,42 @@ def handle_compare(s):
 
 
 def handle_new():
-    """Создать новое."""
+    """Создать новое множество."""
     return get_other_set()
 
 
 def main():
     """Главная функция."""
-    print("=" * 60)
+    print("="*60)
     print("МНОЖЕСТВО ЧИСЕЛ")
-    print("=" * 60)
+    print("="*60)
 
     s = get_other_set()
+
+    handlers = {
+        "1": handle_show,
+        "2": handle_add,
+        "3": handle_remove,
+        "4": handle_contains,
+        "5": handle_union,
+        "6": handle_compare,
+        "7": handle_new,
+    }
 
     while True:
         print_menu()
         print(f"Текущее: {s}")
         choice = input("Выбор: ").strip()
 
-        if choice == "1":
-            s = handle_show(s)
-        elif choice == "2":
-            s = handle_add(s)
-        elif choice == "3":
-            s = handle_remove(s)
-        elif choice == "4":
-            s = handle_contains(s)
-        elif choice == "5":
-            s = handle_union(s)
-        elif choice == "6":
-            s = handle_compare(s)
-        elif choice == "7":
-            s = handle_new()
-        elif choice == "8":
+        if choice == "8":
             print("Выход")
             break
+
+        if choice in handlers:
+            if choice == "7":
+                s = handlers[choice]()
+            else:
+                s = handlers[choice](s)
         else:
             print("Неверный выбор")
 
