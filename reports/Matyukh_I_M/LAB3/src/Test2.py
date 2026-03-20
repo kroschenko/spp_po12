@@ -1,14 +1,13 @@
 from abc import ABC, abstractmethod
-from datetime import datetime
 
 
 class PassportSystem:
-    def __init__(self, full_name, birth_date, passport_number, issue_date, issued_by):
-        self.full_name = full_name
-        self.birth_date = birth_date
-        self.passport_number = passport_number
-        self.issue_date = issue_date
-        self.issued_by = issued_by
+    def __init__(self, passport_data):
+        self.full_name = passport_data["full_name"]
+        self.birth_date = passport_data["birth_date"]
+        self.passport_number = passport_data["passport_number"]
+        self.issue_date = passport_data["issue_date"]
+        self.issued_by = passport_data["issued_by"]
 
     def get_passport_data(self):
         return {
@@ -22,7 +21,7 @@ class PassportSystem:
     def display_passport(self):
         data = self.get_passport_data()
         return f"""
-┌───────────────────── ПАСПОРТ РФ ─────────────────────┐
+┌───────────────────── ПАСПОРТ РБ ─────────────────────┐
 │ ФИО: {data['full_name']:<35} │
 │ Дата рождения: {data['birth_date']:<28} │
 │ Номер паспорта: {data['passport_number']:<27} │
@@ -172,13 +171,14 @@ class UniversalCard(UniversalCardInterface):
 
 def input_passport_data():
     print("\n📋 ВВОД ПАСПОРТНЫХ ДАННЫХ:")
-    full_name = input("Введите ФИО полностью: ")
-    birth_date = input("Введите дату рождения (ДД.ММ.ГГГГ): ")
-    passport_number = input("Введите номер паспорта (серия номер): ")
-    issue_date = input("Введите дату выдачи (ДД.ММ.ГГГГ): ")
-    issued_by = input("Введите кем выдан паспорт: ")
-
-    return PassportSystem(full_name, birth_date, passport_number, issue_date, issued_by)
+    passport_data = {
+        "full_name": input("Введите ФИО полностью: "),
+        "birth_date": input("Введите дату рождения (ДД.ММ.ГГГГ): "),
+        "passport_number": input("Введите номер паспорта (серия номер): "),
+        "issue_date": input("Введите дату выдачи (ДД.ММ.ГГГГ): "),
+        "issued_by": input("Введите кем выдан паспорт: "),
+    }
+    return PassportSystem(passport_data)
 
 
 def input_insurance_data():
