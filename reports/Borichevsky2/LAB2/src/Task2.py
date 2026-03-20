@@ -197,7 +197,7 @@ class Client(User):
             print(f"{self.name}: no account assigned")
             return False
 
-        print(f"\n--- Transferring {amount} RUB to account {target_account.account_number} ---")
+        print(f"\nTransferring {amount} RUB to account {target_account.account_number} ")
         if self.account.withdraw(amount):
             target_account.deposit(amount)
             print("Transfer completed!")
