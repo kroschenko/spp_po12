@@ -7,7 +7,6 @@ Demonstrates OOP principles: inheritance, abstraction, encapsulation, polymorphi
 """
 
 from abc import ABC, abstractmethod
-from datetime import datetime
 from typing import Optional
 from enum import Enum
 
@@ -138,10 +137,6 @@ class User(ABC):
     @abstractmethod
     def get_role(self) -> str:
         """Get user role (to be implemented by subclasses)"""
-        pass
-
-    def __str__(self) -> str:
-        return f"{self.get_role()}: {self.name} (ID: {self.user_id})"
 
 
 class Client(User):
