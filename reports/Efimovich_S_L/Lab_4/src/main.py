@@ -1,8 +1,8 @@
+import time
+import json
 import requests
 import networkx as nx
 import matplotlib.pyplot as plt
-import json
-import time
 
 GITHUB_TOKEN = ""
 
@@ -11,15 +11,13 @@ if GITHUB_TOKEN:
     headers["Authorization"] = f"token {GITHUB_TOKEN}"
 
 
-def get_repos(username):
-    url = f"https://api.github.com/users/{username}/repos"
+def get_repos(github_username):
+    url = f"https://api.github.com/users/{github_username}/repos"
     repos = []
     page = 1
 
     while True:
-        response = requests.get(
-            url, headers=headers, params={"page": page, "per_page": 100}
-        )
+        response = requests.get(url, headers=headers, params={"page": page, "per_page": 100})
         data = response.json()
 
         if not data:
@@ -49,13 +47,13 @@ def get_pulls(repo_full_name):
     return response.json()
 
 
-def analyze_user(username):
-    print(f"Анализируем взаимодействия пользователя {username}...")
+def analyze_user(github_username):
+    print(f"Анализируем взаимодействия пользователя {github_username}...")
 
-    repos = get_repos(username)
+    repos = get_repos(github_username)
 
     G = nx.Graph()
-    G.add_node(username)
+    G.add_node(github_username)
 
     interactions = set()
 
@@ -66,25 +64,25 @@ def analyze_user(username):
 
         contributors = get_contributors(repo_name)
         for user in contributors:
-            if user["login"] != username:
+            if user["login"] != github_username:
                 interactions.add(user["login"])
-                G.add_edge(username, user["login"], type="commit")
+                G.add_edge(github_username, user["login"], type="commit")
 
         issues = get_issues(repo_name)
         for issue in issues:
             if "user" in issue and issue["user"]:
                 login = issue["user"]["login"]
-                if login != username:
+                if login != github_username:
                     interactions.add(login)
-                    G.add_edge(username, login, type="issue")
+                    G.add_edge(github_username, login, type="issue")
 
         pulls = get_pulls(repo_name)
         for pr in pulls:
             if "user" in pr and pr["user"]:
                 login = pr["user"]["login"]
-                if login != username:
+                if login != github_username:
                     interactions.add(login)
-                    G.add_edge(username, login, type="pr")
+                    G.add_edge(github_username, login, type="pr")
 
         time.sleep(0.5)
 
