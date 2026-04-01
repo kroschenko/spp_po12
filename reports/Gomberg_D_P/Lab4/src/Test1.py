@@ -1,6 +1,6 @@
-import requests
 import json
 import os
+import requests
 
 
 def get_latest_release(repo):
@@ -12,17 +12,14 @@ def get_latest_release(repo):
 
         if response.status_code == 200:
             return response.json()
-        elif response.status_code == 403:
-            print(
-                f" (!) Превышен лимит запросов GitHub (Rate Limit). Попробуйте позже."
-            )
+        if response.status_code == 403:
+            print(" (!) Превышен лимит запросов GitHub (Rate Limit). Попробуйте позже.")
             return None
-        elif response.status_code == 404:
+        if response.status_code == 404:
             return get_latest_tag(repo)
-        else:
-            print(f" (!) Ошибка API: {response.status_code}")
-            return None
-    except Exception as e:
+        print(f" (!) Ошибка API: {response.status_code}")
+        return None
+    except requests.RequestException as e:
         print(f" (!) Ошибка сети: {e}")
         return None
 
@@ -43,7 +40,7 @@ def get_latest_tag(repo):
                     "body": "Информация о версии из тега (релизов нет)",
                 }
         return None
-    except Exception as e:
+    except requests.RequestException as e:
         print(f" (!) Ошибка при получении тегов: {e}")
         return None
 
@@ -55,10 +52,10 @@ def main():
     db_file = "last_versions.json"
     last_versions = {}
     if os.path.exists(db_file):
-        with open(db_file, "r") as f:
+        with open(db_file, "r", encoding="utf-8") as f:
             try:
                 last_versions = json.load(f)
-            except:
+            except (json.JSONDecodeError, IOError):
                 pass
 
     for repo in repos:
@@ -81,7 +78,7 @@ def main():
         else:
             print(f"❌ Не удалось получить данные для {repo}.\n")
 
-    with open(db_file, "w") as f:
+    with open(db_file, "w", encoding="utf-8") as f:
         json.dump(last_versions, f, indent=4)
 
 
