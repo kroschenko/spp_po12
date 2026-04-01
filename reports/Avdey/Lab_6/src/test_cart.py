@@ -148,8 +148,6 @@ def test_find_two_sum_single_element():
 
 # Задание 3
 
-from task_3 import repeat
-
 
 def test_repeat_zero():
     assert repeat("e", 0) == ""
