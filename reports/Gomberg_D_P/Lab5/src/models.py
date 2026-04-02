@@ -1,16 +1,14 @@
+from datetime import datetime
+
 from sqlalchemy import (
-    create_engine,
     Column,
     Integer,
     String,
-    Float,
     Date,
     ForeignKey,
-    DateTime,
     Numeric,
 )
-from sqlalchemy.orm import declarative_base, relationship, sessionmaker
-from datetime import datetime
+from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 

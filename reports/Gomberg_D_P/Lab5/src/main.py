@@ -1,11 +1,12 @@
-from fastapi import FastAPI, HTTPException, Depends
-from pydantic import BaseModel
-from typing import List, Optional
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
-from datetime import date, datetime
 import sys
 import os
+from typing import List, Optional
+from datetime import date
+
+from fastapi import FastAPI, HTTPException, Depends
+from pydantic import BaseModel
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, Session
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -88,9 +89,7 @@ def get_supplier(supplier_id: int, db: Session = Depends(get_db)):
 
 
 @app.put("/suppliers/{supplier_id}")
-def update_supplier(
-    supplier_id: int, supplier: SupplierCreate, db: Session = Depends(get_db)
-):
+def update_supplier(supplier_id: int, supplier: SupplierCreate, db: Session = Depends(get_db)):
     db_supplier = db.query(Supplier).filter(Supplier.id == supplier_id).first()
     if not db_supplier:
         raise HTTPException(status_code=404, detail="Supplier not found")
@@ -133,9 +132,7 @@ def get_product(product_id: int, db: Session = Depends(get_db)):
 
 
 @app.put("/products/{product_id}")
-def update_product(
-    product_id: int, product: ProductCreate, db: Session = Depends(get_db)
-):
+def update_product(product_id: int, product: ProductCreate, db: Session = Depends(get_db)):
     db_product = db.query(Product).filter(Product.id == product_id).first()
     if not db_product:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -178,9 +175,7 @@ def get_customer(customer_id: int, db: Session = Depends(get_db)):
 
 
 @app.put("/customers/{customer_id}")
-def update_customer(
-    customer_id: int, customer: CustomerCreate, db: Session = Depends(get_db)
-):
+def update_customer(customer_id: int, customer: CustomerCreate, db: Session = Depends(get_db)):
     db_customer = db.query(Customer).filter(Customer.id == customer_id).first()
     if not db_customer:
         raise HTTPException(status_code=404, detail="Customer not found")
@@ -266,9 +261,7 @@ def get_order_item(item_id: int, db: Session = Depends(get_db)):
 
 
 @app.put("/order_items/{item_id}")
-def update_order_item(
-    item_id: int, item: OrderItemCreate, db: Session = Depends(get_db)
-):
+def update_order_item(item_id: int, item: OrderItemCreate, db: Session = Depends(get_db)):
     db_item = db.query(OrderItem).filter(OrderItem.id == item_id).first()
     if not db_item:
         raise HTTPException(status_code=404, detail="Item not found")
