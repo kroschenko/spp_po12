@@ -3,12 +3,12 @@ import sys
 from typing import List, Optional
 from datetime import date
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from fastapi import FastAPI, HTTPException, Depends  # noqa: C0413
+from pydantic import BaseModel  # noqa: C0413
+from sqlalchemy import create_engine  # noqa: C0413
+from sqlalchemy.orm import sessionmaker, Session  # noqa: C0413
 
-from fastapi import FastAPI, HTTPException, Depends
-from pydantic import BaseModel
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from models import Base, Supplier, Product, Customer, Order, OrderItem  # noqa: C0413
 
