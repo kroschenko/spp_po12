@@ -1,16 +1,16 @@
-import sys
 import os
+import sys
 from typing import List, Optional
 from datetime import date
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
-from models import Base, Supplier, Product, Customer, Order, OrderItem
+from models import Base, Supplier, Product, Customer, Order, OrderItem  # noqa: C0413
 
 DATABASE_URL = "postgresql://postgres:55662@127.0.0.1:5432/spp_05"
 engine = create_engine(DATABASE_URL, echo=False)
