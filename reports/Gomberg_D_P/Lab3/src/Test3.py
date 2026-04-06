@@ -59,7 +59,7 @@ def generate_salary_report(root_manager):
     current_dept = ""
     for emp, _ in sorted_list:
         if current_dept and current_dept != emp.department:
-            print("-" * 70)  # Визуальный разделитель групп
+            print("-" * 70)
 
         print(f"{emp.department:<15} | {emp.position:<22} | {emp.name:<15} | {emp.salary:,} руб.")
         current_dept = emp.department
