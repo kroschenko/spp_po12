@@ -1,6 +1,7 @@
+from unittest.mock import patch
+
 import pytest
 import requests
-from unittest.mock import patch, MagicMock
 
 
 class Cart:
@@ -30,7 +31,7 @@ class Cart:
 
 
 def log_purchase(item):
-    requests.post("https://example.com/log", json=item)
+    requests.post("https://example.com/log", json=item, timeout=5)
 
 
 # ============ TESTS FOR TASK 1 ============
@@ -97,8 +98,6 @@ class TestApplyCoupon:
             empty_cart.apply_coupon("INVALID")
 
     def test_apply_coupon_with_monkeypatch_coupons_dict(self, empty_cart, monkeypatch):
-        original_apply_coupon = Cart.apply_coupon
-
         def patched_apply_coupon(self, coupon_code):
             test_coupons = {"TEST": 25}
             if coupon_code in test_coupons:
