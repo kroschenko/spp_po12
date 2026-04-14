@@ -24,9 +24,6 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import sessionmaker, relationship, Session, declarative_base
 
-# ==========================================
-# НАСТРОЙКА БАЗЫ ДАННЫХ
-# ==========================================
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./accounting.db"
 engine = create_engine(
@@ -36,9 +33,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 
-# ==========================================
-# МОДЕЛИ БАЗЫ ДАННЫХ (SQLAlchemy)
-# ==========================================
+
 
 
 class Department(Base):
@@ -94,13 +89,11 @@ class Transaction(Base):
     category_id = Column(Integer, ForeignKey("categories.id"))
 
 
-# Создание всех таблиц в БД
+
 Base.metadata.create_all(bind=engine)
 
 
-# ==========================================
-# СХЕМЫ ДАННЫХ (Pydantic)
-# ==========================================
+
 
 
 class EmployeeCreate(BaseModel):
@@ -120,9 +113,7 @@ class EmployeeOut(EmployeeCreate):
         orm_mode = True
 
 
-# ==========================================
-# ВЕБ-ПРИЛОЖЕНИЕ И ЭНДПОЙНТЫ (FastAPI)
-# ==========================================
+
 
 app = FastAPI(title="Система Бухгалтерии (Accounting API)")
 
