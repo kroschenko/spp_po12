@@ -1,18 +1,22 @@
-"""Tests for repeat module."""
-# pylint: disable=redefined-outer-name
+"""Tests for string repeat module."""
 
 import pytest
 from string_repeat import repeat
 
 
-@pytest.mark.parametrize("pattern,n,expected", [
-    ("e", 0, ""),
-    ("e", 3, "eee"),
-    ("ABC", 2, "ABCABC"),
-])
-def test_repeat(pattern, n, expected):
-    """Test string repeat."""
-    assert repeat(pattern, n) == expected
+def test_repeat_zero():
+    """Test repeat 0 times."""
+    assert repeat("e", 0) == ""
+
+
+def test_repeat_three():
+    """Test repeat 3 times."""
+    assert repeat("e", 3) == "eee"
+
+
+def test_repeat_pattern():
+    """Test repeat pattern."""
+    assert repeat("ABC", 2) == "ABCABC"
 
 
 def test_repeat_negative():

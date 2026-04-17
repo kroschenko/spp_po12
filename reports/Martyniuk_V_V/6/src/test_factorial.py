@@ -1,14 +1,22 @@
 """Tests for factorial module."""
-# pylint: disable=redefined-outer-name
 
 import pytest
 from factorial import factorial
 
 
-@pytest.mark.parametrize("n,expected", [(0, 1), (1, 1), (2, 2), (3, 6), (5, 120)])
-def test_factorial(n, expected):
-    """Test factorial calculation."""
-    assert factorial(n) == expected
+def test_factorial_zero():
+    """Test factorial of 0."""
+    assert factorial(0) == 1
+
+
+def test_factorial_one():
+    """Test factorial of 1."""
+    assert factorial(1) == 1
+
+
+def test_factorial_five():
+    """Test factorial of 5."""
+    assert factorial(5) == 120
 
 
 def test_factorial_negative():

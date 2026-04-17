@@ -41,3 +41,4 @@ def apply_coupon(cart: Cart, code: str) -> None:
     if code not in COUPONS:
         raise ValueError("Invalid coupon")
     cart.apply_discount(COUPONS[code])
+    
