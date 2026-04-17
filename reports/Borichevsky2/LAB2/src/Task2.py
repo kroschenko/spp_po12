@@ -80,8 +80,8 @@ class CreditCard:
         print(f"Card {self.card_number}: blocked")
 
     def __str__(self) -> str:
-        return f"Card {self.card_number}: limit={self.limit}, " \
-               f"debt={self.balance}, status={self.status.value}"
+        +
+        return f"Card {self.card_number}: limit={self.limit}, " f"debt={self.balance}, status={self.status.value}"
 
 
 class BankAccount:
@@ -122,8 +122,8 @@ class BankAccount:
         print(f"Account {self.account_number}: closed")
 
     def __str__(self) -> str:
-        return f"Account {self.account_number}: balance={self._balance}, " \
-               f"status={self.status.value}"
+        +
+        return f"Account {self.account_number}: balance={self._balance}, " f"status={self.status.value}"
 
 
 class User(ABC):
