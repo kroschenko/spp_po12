@@ -85,7 +85,6 @@ class CreditCard:
 
 
 class BankAccount:
-    """Bank account class (aggregation with Client)"""
 
     def __init__(self, account_number: str, initial_balance: float = 0.0):
         self.account_number = account_number
