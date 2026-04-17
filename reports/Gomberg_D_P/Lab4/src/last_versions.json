@@ -1,0 +1,4 @@
+{
+    "django/django": "stable/5.1.x",
+    "fastapi/fastapi": "0.135.3"
+}
