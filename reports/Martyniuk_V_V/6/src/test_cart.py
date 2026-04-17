@@ -1,5 +1,5 @@
 """Tests for cart module."""
-
+# pylint: disable=redefined-outer-name
 from unittest.mock import patch
 import pytest
 from shopping import Cart, log_purchase, apply_coupon
