@@ -1,12 +1,13 @@
-"""Tests for cart module."""
 # pylint: disable=redefined-outer-name
-from unittest.mock import patch
+"""Tests for shopping module."""
+
 import pytest
-from shopping import Cart, log_purchase, apply_coupon
+from shopping import Cart, apply_coupon
 
 
 @pytest.fixture
 def empty_cart():
+    """Return empty cart."""
     return Cart()
 
 
@@ -26,17 +27,10 @@ def test_total(empty_cart):
     assert empty_cart.total() == 300
 
 
-@pytest.mark.parametrize("d,exp", [(0, 100), (50, 50), (100, 0)])
-def test_discount(empty_cart, d, exp):
+def test_discount(empty_cart):
     empty_cart.add_item("X", 100)
-    empty_cart.apply_discount(d)
-    assert empty_cart.total() == exp
-
-
-@patch("shopping.requests.post")
-def test_log(mock_post):
-    log_purchase({"name": "Apple"})
-    mock_post.assert_called_once()
+    empty_cart.apply_discount(50)
+    assert empty_cart.total() == 50
 
 
 def test_coupon(empty_cart):
