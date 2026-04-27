@@ -1,4 +1,4 @@
-# pylint: disable=invalid-name, R0902, R0903, R0913, R0914, R0915, W0703, W0718, W0613, W0612, W0201, import-error, no-name-in-module
+# pylint: disable=invalid-name, R0902, R0903, R0913, R0914, R0915, W0703, W0718, W0613, W0612, W0201, import-error, no-name-in-module, C0301, C0303, C0304
 """
 Модуль для Лабораторной работы №7 (Задание 2).
 Построение и визуализация фрактала "Остров Минковского".
