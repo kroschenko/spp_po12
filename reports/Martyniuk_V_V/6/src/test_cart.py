@@ -1,7 +1,7 @@
 """
 Тесты для модуля shopping.
 
-Содержит все тесты для класса Cart и функций log_purchase, apply_coupon.
+Содержит прямо все тесты для класса Cart и функций log_purchase, apply_coupon.
 """
 
 from unittest.mock import patch
