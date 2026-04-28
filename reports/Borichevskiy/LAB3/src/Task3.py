@@ -68,4 +68,3 @@ if __name__ == "__main__":
 
     printer.set_strategy(InkjetPrintStrategy())
     print(printer.print("Документ 2"))
-

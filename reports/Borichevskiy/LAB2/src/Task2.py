@@ -163,4 +163,3 @@ if __name__ == "__main__":
 
     print("Оплата заказа:", client.pay(order))
     print(order)
-
