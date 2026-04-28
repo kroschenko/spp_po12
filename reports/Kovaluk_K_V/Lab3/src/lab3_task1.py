@@ -50,7 +50,7 @@ class Student:
         self.lab_results = {}
 
 
-if __name__ == "__main__":
+def main():
     t1 = Teacher()
     t2 = Teacher()
 
@@ -87,3 +87,7 @@ if __name__ == "__main__":
     print("\n--- Итоговые данные студентов ---")
     for s in [s1, s2, s3]:
         print(f"Студент: {s.name}, Оценки: {s.grades}")
+
+
+if __name__ == "__main__":
+    main()
