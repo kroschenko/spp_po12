@@ -11,30 +11,24 @@ from enum import Enum
 
 
 class PaymentStatus(Enum):
-    """Payment status enumeration"""
     PENDING = "pending"
     COMPLETED = "completed"
     FAILED = "failed"
 
 
 class AccountStatus(Enum):
-    """Account status enumeration"""
     ACTIVE = "active"
     BLOCKED = "blocked"
     CLOSED = "closed"
 
 
 class CardStatus(Enum):
-    """Card status enumeration"""
     ACTIVE = "active"
     BLOCKED = "blocked"
 
 
-# ==================== SYSTEM CLASSES ====================
-
-
 class Order:
-    """Order class (association with Client)"""
+    """Order class"""
 
     def __init__(self, order_id: str, amount: float, description: str):
         self.order_id = order_id
@@ -48,7 +42,7 @@ class Order:
 
 
 class CreditCard:
-    """Credit card class (aggregation with Client)"""
+    """Credit card class"""
 
     def __init__(self, card_number: str, limit: float):
         self.card_number = card_number
@@ -62,7 +56,7 @@ class CreditCard:
 
     def charge(self, amount: float) -> bool:
         if self.status == CardStatus.BLOCKED:
-            print(f"Card {self.card_number}: operation declined (card blocked)")
+            print(f"Card {self.card_number}: operation declined (blocked)")
             return False
         if amount > self.available_credit:
             print(f"Card {self.card_number}: insufficient funds")
@@ -212,8 +206,6 @@ class Administrator(User):
             print(f"\n[ADMIN] Card {card.card_number} is OK")
 
 
-# ==================== DEMONSTRATION ====================
-
 if __name__ == "__main__":
     print("=" * 60)
     print("TASK 2: PAYMENT SYSTEM DEMONSTRATION")
@@ -250,3 +242,4 @@ if __name__ == "__main__":
     print("\n" + "=" * 60)
     print("DEMONSTRATION COMPLETE")
     print("=" * 60)
+
