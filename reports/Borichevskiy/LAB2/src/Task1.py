@@ -2,47 +2,42 @@ import math
 
 
 class EquilateralTriangle:
-    """Класс равностороннего треугольника"""
+    """Класс равностороннего треугольника."""
 
     def __init__(self, side: float):
-        """Конструктор с начальной инициализацией"""
-        self._side = side
+        """Конструктор с начальной инициализацией."""
+        self.side = side  # используем сеттер с проверкой
 
     @property
     def side(self) -> float:
-        """Геттер для стороны"""
+        """Геттер для стороны."""
         return self._side
 
     @side.setter
     def side(self, value: float):
-        """Сеттер для стороны с проверкой"""
+        """Сеттер для стороны с проверкой."""
         if value <= 0:
             raise ValueError("Сторона должна быть положительной")
         self._side = value
 
     def is_valid(self) -> bool:
-        """Проверка существования треугольника"""
+        """Проверка существования треугольника."""
         return self._side > 0
 
     def perimeter(self) -> float:
-        """Вычисление периметра"""
-        if not self.is_valid():
-            raise ValueError("Треугольник не существует")
+        """Вычисление периметра."""
         return 3 * self._side
 
     def area(self) -> float:
-        """Вычисление площади"""
-        if not self.is_valid():
-            raise ValueError("Треугольник не существует")
+        """Вычисление площади."""
         return (math.sqrt(3) / 4) * self._side**2
 
     def __str__(self) -> str:
-        """Строковое представление"""
-        status = "существует" if self.is_valid() else "не существует"
-        return f"Равносторонний треугольник (сторона={self._side}), статус: {status}"
+        """Строковое представление."""
+        return f"Равносторонний треугольник (сторона={self._side})"
 
     def __eq__(self, other) -> bool:
-        """Сравнение треугольников по площади"""
+        """Сравнение треугольников по площади."""
         if not isinstance(other, EquilateralTriangle):
             return NotImplemented
         return math.isclose(self.area(), other.area())
@@ -58,7 +53,6 @@ if __name__ == "__main__":
     t1 = EquilateralTriangle(5.0)
     t2 = EquilateralTriangle(5.0)
     t3 = EquilateralTriangle(10.0)
-    t_invalid = EquilateralTriangle(-3.0)
 
     # Вывод информации
     print(f"\nТреугольник 1: {t1}")
@@ -66,11 +60,7 @@ if __name__ == "__main__":
     print(f"  Площадь: {t1.area():.2f}")
 
     print(f"\nТреугольник 2: {t2}")
-    print(f"\nТреугольник 3: {t3}")
-
-    # Проверка невалидного
-    print(f"\nНевалидный: {t_invalid}")
-    print(f"  Существует? {t_invalid.is_valid()}")
+    print(f"Треугольник 3: {t3}")
 
     # Сравнение
     print(f"\nСравнение t1 == t2 (одинаковые): {t1 == t2}")
