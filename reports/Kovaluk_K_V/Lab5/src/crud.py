@@ -1,6 +1,8 @@
-from sqlalchemy.orm import Session
+# pylint: disable=too-many-positional-arguments
 from datetime import date
+from sqlalchemy.orm import Session
 from database import Client, Manufacturer, Product, Order, OrdersSummary, Computer
+
 
 def create_client(db: Session, first_name, last_name, sex, nick_name=None, phone=None, email=None):
     client = Client(
@@ -16,11 +18,14 @@ def create_client(db: Session, first_name, last_name, sex, nick_name=None, phone
     db.refresh(client)
     return client
 
+
 def get_clients(db: Session, skip=0, limit=100):
     return db.query(Client).offset(skip).limit(limit).all()
 
+
 def get_client(db: Session, client_id):
     return db.query(Client).filter(Client.d_id == client_id).first()
+
 
 def update_client(db: Session, client_id, **kwargs):
     client = db.query(Client).filter(Client.d_id == client_id).first()
@@ -32,6 +37,7 @@ def update_client(db: Session, client_id, **kwargs):
         db.refresh(client)
     return client
 
+
 def delete_client(db: Session, client_id):
     client = db.query(Client).filter(Client.d_id == client_id).first()
     if client:
@@ -40,6 +46,7 @@ def delete_client(db: Session, client_id):
         return True
     return False
 
+
 def create_product(db: Session, name, price, man_id):
     product = Product(name=name, price=price, man_id=man_id)
     db.add(product)
@@ -47,11 +54,14 @@ def create_product(db: Session, name, price, man_id):
     db.refresh(product)
     return product
 
+
 def get_products(db: Session, skip=0, limit=100):
     return db.query(Product).offset(skip).limit(limit).all()
 
+
 def get_product(db: Session, product_id):
     return db.query(Product).filter(Product.pr_id == product_id).first()
+
 
 def update_product(db: Session, product_id, **kwargs):
     product = db.query(Product).filter(Product.pr_id == product_id).first()
@@ -63,6 +73,7 @@ def update_product(db: Session, product_id, **kwargs):
         db.refresh(product)
     return product
 
+
 def delete_product(db: Session, product_id):
     product = db.query(Product).filter(Product.pr_id == product_id).first()
     if product:
@@ -71,11 +82,12 @@ def delete_product(db: Session, product_id):
         return True
     return False
 
+
 def create_order(db: Session, d_id, items):
     order = Order(d_id=d_id, date_of_order=date.today(), total_sum=0.00)
     db.add(order)
     db.flush()
-    
+
     total = 0
     for item in items:
         product = db.query(Product).filter(Product.pr_id == item["pr_id"]).first()
@@ -87,17 +99,20 @@ def create_order(db: Session, d_id, items):
             )
             db.add(order_item)
             total += float(product.price) * item["count"]
-    
+
     order.total_sum = total
     db.commit()
     db.refresh(order)
     return order
 
+
 def get_orders(db: Session, skip=0, limit=100):
     return db.query(Order).offset(skip).limit(limit).all()
 
+
 def get_order(db: Session, order_id):
     return db.query(Order).filter(Order.ord_id == order_id).first()
+
 
 def update_order(db: Session, order_id, **kwargs):
     order = db.query(Order).filter(Order.ord_id == order_id).first()
@@ -109,6 +124,7 @@ def update_order(db: Session, order_id, **kwargs):
         db.refresh(order)
     return order
 
+
 def delete_order(db: Session, order_id):
     order = db.query(Order).filter(Order.ord_id == order_id).first()
     if order:
@@ -118,6 +134,7 @@ def delete_order(db: Session, order_id):
         return True
     return False
 
+
 def create_manufacturer(db: Session, name, establish_date):
     manufacturer = Manufacturer(name=name, establish_date=establish_date)
     db.add(manufacturer)
@@ -125,11 +142,14 @@ def create_manufacturer(db: Session, name, establish_date):
     db.refresh(manufacturer)
     return manufacturer
 
+
 def get_manufacturers(db: Session, skip=0, limit=100):
     return db.query(Manufacturer).offset(skip).limit(limit).all()
 
+
 def get_manufacturer(db: Session, man_id):
     return db.query(Manufacturer).filter(Manufacturer.man_id == man_id).first()
+
 
 def update_manufacturer(db: Session, man_id, **kwargs):
     manufacturer = db.query(Manufacturer).filter(Manufacturer.man_id == man_id).first()
@@ -141,6 +161,7 @@ def update_manufacturer(db: Session, man_id, **kwargs):
         db.refresh(manufacturer)
     return manufacturer
 
+
 def delete_manufacturer(db: Session, man_id):
     manufacturer = db.query(Manufacturer).filter(Manufacturer.man_id == man_id).first()
     if manufacturer:
@@ -148,6 +169,7 @@ def delete_manufacturer(db: Session, man_id):
         db.commit()
         return True
     return False
+
 
 def get_order_details(db: Session, order_id):
     result = db.query(
@@ -165,6 +187,7 @@ def get_order_details(db: Session, order_id):
      .filter(Order.ord_id == order_id).all()
     return result
 
+
 def create_computer(db: Session, serial_number, model, processor, ram_gb, storage_gb, pr_id, status="available"):
     computer = Computer(
         serial_number=serial_number,
@@ -180,11 +203,14 @@ def create_computer(db: Session, serial_number, model, processor, ram_gb, storag
     db.refresh(computer)
     return computer
 
+
 def get_computers(db: Session, skip=0, limit=100):
     return db.query(Computer).offset(skip).limit(limit).all()
 
+
 def get_computer(db: Session, comp_id):
     return db.query(Computer).filter(Computer.comp_id == comp_id).first()
+
 
 def update_computer(db: Session, comp_id, **kwargs):
     computer = db.query(Computer).filter(Computer.comp_id == comp_id).first()
@@ -195,6 +221,7 @@ def update_computer(db: Session, comp_id, **kwargs):
         db.commit()
         db.refresh(computer)
     return computer
+
 
 def delete_computer(db: Session, comp_id):
     computer = db.query(Computer).filter(Computer.comp_id == comp_id).first()
