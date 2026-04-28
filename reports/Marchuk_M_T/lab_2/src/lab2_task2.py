@@ -55,11 +55,7 @@ class Archive:
 
     def save_record(self, student_name, course_title, grade):
         """Сохранение записи в список."""
-        self.records.append({
-            "student": student_name,
-            "course": course_title,
-            "grade": grade
-        })
+        self.records.append({"student": student_name, "course": course_title, "grade": grade})
 
     def show_all(self):
         """Вывод всех записей."""
