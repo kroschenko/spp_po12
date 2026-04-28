@@ -56,6 +56,9 @@ class Car:
         self.doors_locked = False
         self.alarm_active = False
 
+    def set_remote(self, remote):
+        self._remote = remote
+
     def activate_alarm(self):
         result = self._remote.activate_alarm(self.model)
         self.alarm_active = True
@@ -134,6 +137,6 @@ if __name__ == "__main__":
 
     print("\n--- Смена пульта на лету ---")
     print("Toyota теперь получает премиум пульт:")
-    toyota._remote = PremiumRemote()
+    toyota.set_remote(PremiumRemote())
     print(toyota.start_engine())
     print(toyota.get_status())
