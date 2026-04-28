@@ -46,8 +46,8 @@ class Command:
 
 
 class CreateOrderCommand(Command):
-    def __init__(self, pizzeria, pizzas, order_id=None):
-        self.pizzeria = pizzeria
+    def __init__(self, pizzeria_instance, pizzas, order_id=None):
+        self.pizzeria = pizzeria_instance
         self.pizzas = pizzas
         self.order_id = order_id
         self.created_order = None
@@ -64,8 +64,8 @@ class CreateOrderCommand(Command):
 
 
 class CancelOrderCommand(Command):
-    def __init__(self, pizzeria, order_id):
-        self.pizzeria = pizzeria
+    def __init__(self, pizzeria_instance, order_id):
+        self.pizzeria = pizzeria_instance
         self.order_id = order_id
         self.cancelled_order = None
 
@@ -87,8 +87,8 @@ class CancelOrderCommand(Command):
 
 
 class RepeatLastOrderCommand(Command):
-    def __init__(self, pizzeria):
-        self.pizzeria = pizzeria
+    def __init__(self, pizzeria_instance):
+        self.pizzeria = pizzeria_instance
         self.repeated_order = None
         self.original_order = None
 
@@ -109,8 +109,8 @@ class RepeatLastOrderCommand(Command):
 
 
 class AddPizzaCommand(Command):
-    def __init__(self, pizzeria, order_id, pizza):
-        self.pizzeria = pizzeria
+    def __init__(self, pizzeria_instance, order_id, pizza):
+        self.pizzeria = pizzeria_instance
         self.order_id = order_id
         self.pizza = pizza
         self.added = False
@@ -219,9 +219,9 @@ if __name__ == "__main__":
     print("\n--- 2. Добавление пиццы в заказ ---")
     cmd2 = AddPizzaCommand(pizzeria, 1, quattro_formaggi)
     invoker.execute_command(cmd2)
-    order = pizzeria.get_order(1)
-    print(f"Заказ #{order.order_id}: {order.get_items_description()}")
-    print(f"Общая стоимость: {order.total_cost()} руб")
+    order_obj = pizzeria.get_order(1)
+    print(f"Заказ #{order_obj.order_id}: {order_obj.get_items_description()}")
+    print(f"Общая стоимость: {order_obj.total_cost()} руб")
 
     print("\n--- 3. Создание второго заказа ---")
     cmd3 = CreateOrderCommand(pizzeria, [hawaiian])
@@ -230,9 +230,9 @@ if __name__ == "__main__":
 
     print("\n--- 4. Отмена последней команды (добавление пиццы) ---")
     invoker.undo_last()
-    order = pizzeria.get_order(1)
-    print(f"После отмены: заказ #{order.order_id}: {order.get_items_description()}")
-    print(f"Стоимость: {order.total_cost()} руб")
+    order_obj = pizzeria.get_order(1)
+    print(f"После отмены: заказ #{order_obj.order_id}: {order_obj.get_items_description()}")
+    print(f"Стоимость: {order_obj.total_cost()} руб")
 
     print("\n--- 5. Повтор последнего заказа ---")
     cmd4 = RepeatLastOrderCommand(pizzeria)
@@ -250,7 +250,7 @@ if __name__ == "__main__":
 
     print("\n--- 8. Итоговая информация ---")
     print(f"Всего заказов в системе: {len(pizzeria.orders)}")
-    for order in pizzeria.orders.values():
-        print(f"  {order}")
-        print(f"    Статус: {order.status}")
-        print(f"    Позиции: {order.get_items_description()}")
+    for order_obj in pizzeria.orders.values():
+        print(f"  {order_obj}")
+        print(f"    Статус: {order_obj.status}")
+        print(f"    Позиции: {order_obj.get_items_description()}")

@@ -8,39 +8,39 @@ class Teacher:
             cls._instance.name = "Преподаватель Иванов"
         return cls._instance
 
-    def add_student(self, student):
-        self.students.append(student)
-        print(f"{student.name} добавлен в группу")
+    def add_student(self, std):
+        self.students.append(std)
+        print(f"{std.name} добавлен в группу")
 
-    def check_laboratory_work(self, student, lab_name):
-        if student in self.students:
-            print(f"{self.name}: Проверил лабораторную работу '{lab_name}' у {student.name}")
-            student.lab_results[lab_name] = "Проверено"
+    def check_laboratory_work(self, std, lab_name):
+        if std in self.students:
+            print(f"{self.name}: Проверил лабораторную работу '{lab_name}' у {std.name}")
+            std.lab_results[lab_name] = "Проверено"
         else:
-            print(f"Студент {student.name} не числится в группе")
+            print(f"Студент {std.name} не числится в группе")
 
     def conduct_consultation(self, topic):
         print(f"{self.name}: Провёл консультацию по теме '{topic}'")
-        for student in self.students:
-            print(f"  - {student.name} присутствовал на консультации")
+        for std in self.students:
+            print(f"  - {std.name} присутствовал на консультации")
 
-    def take_exam(self, student, exam_name):
-        if student in self.students:
-            print(f"{self.name}: Принял экзамен '{exam_name}' у {student.name}")
+    def take_exam(self, std, exam_name):
+        if std in self.students:
+            print(f"{self.name}: Принял экзамен '{exam_name}' у {std.name}")
         else:
-            print(f"Студент {student.name} не числится в группе")
+            print(f"Студент {std.name} не числится в группе")
 
-    def set_grade(self, student, subject, grade):
-        if student in self.students:
-            student.grades[subject] = grade
-            print(f"{self.name}: Выставил отметку {grade} студенту {student.name} по предмету '{subject}'")
+    def set_grade(self, std, subject, grade):
+        if std in self.students:
+            std.grades[subject] = grade
+            print(f"{self.name}: Выставил отметку {grade} студенту {std.name} по предмету '{subject}'")
         else:
-            print(f"Студент {student.name} не числится в группе")
+            print(f"Студент {std.name} не числится в группе")
 
     def conduct_lecture(self, topic):
         print(f"{self.name}: Провёл лекцию на тему '{topic}'")
-        for student in self.students:
-            print(f"  - {student.name} прослушал лекцию")
+        for std in self.students:
+            print(f"  - {std.name} прослушал лекцию")
 
 
 class Student:
@@ -85,5 +85,5 @@ if __name__ == "__main__":
     teacher1.set_grade(student3, "Программирование", 5)
 
     print("\n--- Итоговые данные студентов ---")
-    for student in [student1, student2, student3]:
-        print(f"Студент: {student.name}, Оценки: {student.grades}")
+    for std in [student1, student2, student3]:
+        print(f"Студент: {std.name}, Оценки: {std.grades}")
