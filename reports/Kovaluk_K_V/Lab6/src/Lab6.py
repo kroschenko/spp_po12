@@ -3,8 +3,6 @@ from unittest.mock import patch, MagicMock
 import requests
 
 
-# ==================== ЗАДАНИЕ 1: Мини-библиотека покупок ====================
-
 class Cart:
     def __init__(self):
         self.items = []
@@ -20,7 +18,7 @@ class Cart:
     def apply_discount(self, discount_percent):
         if discount_percent < 0 or discount_percent > 100:
             raise ValueError("Discount must be between 0 and 100")
-        
+
         multiplier = (100 - discount_percent) / 100
         for item in self.items:
             item["price"] = round(item["price"] * multiplier, 2)
@@ -44,8 +42,6 @@ def apply_coupon(cart, coupon_code):
         raise ValueError("Invalid coupon")
 
 
-# ==================== ЗАДАНИЕ 2: CharSet из ЛР1 ====================
-
 class CharSet:
     def __init__(self, max_size=10, initial_chars=None):
         self._max_size = max_size
@@ -68,7 +64,8 @@ class CharSet:
             print(f"Элемент '{char}' уже существует в множестве.")
             return False
         if len(self._items) >= self._max_size:
-            print(f"Ошибка: Достигнута максимальная мощность множества ({self._max_size}). Элемент '{char}' не добавлен.")
+            msg = f"Ошибка: Достигнута максимальная мощность множества ({self._max_size})."
+            print(f"{msg} Элемент '{char}' не добавлен.")
             return False
         self._items.append(char)
         print(f"Элемент '{char}' успешно добавлен.")
@@ -118,15 +115,13 @@ class CharSet:
         return self._max_size == other._max_size and set(self._items) == set(other._items)
 
 
-# ==================== ЗАДАНИЕ 3: substringBetween ====================
-
 def substring_between(str_input, open_str, close_str):
     if str_input is None or open_str is None or close_str is None:
         raise TypeError("None values are not allowed")
-    
+
     if open_str == "" and close_str == "":
         return ""
-    
+
     if open_str == "":
         start = 0
     else:
@@ -134,18 +129,16 @@ def substring_between(str_input, open_str, close_str):
         if start == -1:
             return None
         start += len(open_str)
-    
+
     if close_str == "":
         end = len(str_input)
     else:
         end = str_input.find(close_str, start)
         if end == -1:
             return None
-    
+
     return str_input[start:end]
 
-
-# ==================== ТЕСТЫ ДЛЯ ЗАДАНИЯ 1 ====================
 
 @pytest.fixture
 def empty_cart():
@@ -179,7 +172,7 @@ def test_apply_discount_valid(empty_cart, discount, expected_prices):
     empty_cart.add_item("Apple", 10.0)
     empty_cart.add_item("Banana", 15.0)
     empty_cart.apply_discount(discount)
-    
+
     assert empty_cart.items[0]["price"] == expected_prices[0]
     assert empty_cart.items[1]["price"] == expected_prices[1]
 
@@ -195,10 +188,10 @@ def test_apply_discount_invalid(empty_cart, discount):
 def test_log_purchase(mock_post):
     mock_response = MagicMock()
     mock_post.return_value = mock_response
-    
+
     item = {"name": "Apple", "price": 10.0}
     log_purchase(item)
-    
+
     mock_post.assert_called_once_with(
         "https://example.com/log",
         json=item
@@ -209,7 +202,7 @@ def test_apply_coupon_valid(empty_cart):
     empty_cart.add_item("Apple", 100.0)
     apply_coupon(empty_cart, "SAVE10")
     assert empty_cart.items[0]["price"] == 90.0
-    
+
     empty_cart.clear()
     empty_cart.add_item("Banana", 100.0)
     apply_coupon(empty_cart, "HALF")
@@ -222,56 +215,54 @@ def test_apply_coupon_invalid(empty_cart):
         apply_coupon(empty_cart, "INVALID")
 
 
-# ==================== ТЕСТЫ ДЛЯ ЗАДАНИЯ 2 ====================
-
 def test_char_set_add_valid_char():
     cs = CharSet(5)
     result = cs.add("a")
-    assert result == True
-    assert cs.contains("a") == True
+    assert result is True
+    assert cs.contains("a") is True
     assert len(cs.get_items()) == 1
 
 
 def test_char_set_add_existing_char():
     cs = CharSet(5, ["a"])
     result = cs.add("a")
-    assert result == False
+    assert result is False
     assert len(cs.get_items()) == 1
 
 
 def test_char_set_add_to_full_set():
     cs = CharSet(2, ["a", "b"])
     result = cs.add("c")
-    assert result == False
+    assert result is False
     assert len(cs.get_items()) == 2
 
 
 def test_char_set_add_invalid_char():
     cs = CharSet(5)
     result = cs.add("abc")
-    assert result == False
+    assert result is False
     assert len(cs.get_items()) == 0
 
 
 def test_char_set_remove_existing_char():
     cs = CharSet(5, ["a", "b"])
     result = cs.remove("a")
-    assert result == True
-    assert cs.contains("a") == False
+    assert result is True
+    assert cs.contains("a") is False
     assert len(cs.get_items()) == 1
 
 
 def test_char_set_remove_non_existing_char():
     cs = CharSet(5, ["a", "b"])
     result = cs.remove("c")
-    assert result == False
+    assert result is False
     assert len(cs.get_items()) == 2
 
 
 def test_char_set_contains():
     cs = CharSet(5, ["a", "b"])
-    assert cs.contains("a") == True
-    assert cs.contains("c") == False
+    assert cs.contains("a") is True
+    assert cs.contains("c") is False
 
 
 def test_char_set_union():
@@ -305,9 +296,9 @@ def test_char_set_empty_set():
 def test_char_set_initial_chars():
     cs = CharSet(5, ["a", "b", "c"])
     assert len(cs.get_items()) == 3
-    assert cs.contains("a") == True
-    assert cs.contains("b") == True
-    assert cs.contains("c") == True
+    assert cs.contains("a") is True
+    assert cs.contains("b") is True
+    assert cs.contains("c") is True
 
 
 def test_char_set_max_size():
@@ -316,11 +307,9 @@ def test_char_set_max_size():
     cs.add("b")
     cs.add("c")
     result = cs.add("d")
-    assert result == False
+    assert result is False
     assert len(cs.get_items()) == 3
 
-
-# ==================== ТЕСТЫ ДЛЯ ЗАДАНИЯ 3 ====================
 
 def test_substring_between_none_none_none():
     with pytest.raises(TypeError, match="None values are not allowed"):
