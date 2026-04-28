@@ -42,4 +42,3 @@ if __name__ == "__main__":
 
     print("\nСравнение:")
     print("t1 == t2:", t1 == t2)
-
