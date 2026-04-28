@@ -1,6 +1,7 @@
 import datetime
 import json
 import sys
+import urllib.parse
 import urllib.request
 import urllib.error
 
@@ -9,7 +10,7 @@ class GitHubTopRepos:
     """Класс для поиска популярных репозиториев на GitHub."""
 
     def __init__(self):
-        self.base_url = "https://github.com"
+        self.base_url = "https://api.github.com"
 
     def _make_request(self, url, params=None):
         """Вспомогательный метод для выполнения HTTP-запросов."""
@@ -19,7 +20,7 @@ class GitHubTopRepos:
 
         try:
             req = urllib.request.Request(
-                url, 
+                url,
                 headers={"Accept": "application/vnd.github.v3+json"}
             )
             with urllib.request.urlopen(req, timeout=10) as response:
@@ -54,17 +55,14 @@ class GitHubTopRepos:
         try:
             data = self._make_request(url, params)
             if isinstance(data, list) and data:
-                # Извлекаем дату из вложенной структуры JSON
                 commit_info = data[0].get("commit", {}).get("committer", {})
                 commit_date = commit_info.get("date", "")
                 if commit_date:
-                    # Учитываем формат ISO с Z (UTC)
                     dt_str = commit_date.replace('Z', '+00:00')
                     dt = datetime.datetime.fromisoformat(dt_str)
                     return dt.strftime("%Y-%m-%d")
             return "N/A"
         except (KeyError, IndexError, ValueError):
-            # Ловим ошибки структуры данных или формата даты
             return "N/A"
 
     def get_repo_info(self, repo):
@@ -114,7 +112,6 @@ class GitHubTopRepos:
             print(f"\nРезультаты сохранены в {filename}")
             return True
         except OSError as e:
-            # Заменяем общий Exception на ошибку ввода-вывода
             print(f"Ошибка при сохранении файла: {e}")
             return False
 
