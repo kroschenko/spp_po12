@@ -1,4 +1,5 @@
 from datetime import date
+from sqlalchemy.exc import SQLAlchemyError
 from database import engine, Base, SessionLocal
 from crud import create_client, create_manufacturer, create_product, create_computer
 
@@ -53,8 +54,8 @@ try:
     print("Добавлено продуктов: 7")
     print("Добавлено компьютеров: 4")
 
-except Exception as e:
-    print(f"Ошибка: {e}")
+except SQLAlchemyError as e:
+    print(f"Ошибка при работе с базой данных: {e}")
     db.rollback()
 finally:
     db.close()
