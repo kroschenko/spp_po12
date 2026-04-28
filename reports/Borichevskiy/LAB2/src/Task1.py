@@ -5,60 +5,41 @@ class EquilateralTriangle:
     """Класс равностороннего треугольника."""
 
     def __init__(self, side: float):
-        """Конструктор с начальной инициализацией."""
         self.side = side
 
     @property
     def side(self) -> float:
-        """Геттер для стороны."""
         return self._side
 
     @side.setter
     def side(self, value: float):
-        """Сеттер для стороны с проверкой."""
         if value <= 0:
             raise ValueError("Сторона должна быть положительной")
         self._side = value
 
     def perimeter(self) -> float:
-        """Вычисление периметра."""
         return 3 * self._side
 
     def area(self) -> float:
-        """Вычисление площади."""
         return (math.sqrt(3) / 4) * self._side**2
 
-    def __str__(self) -> str:
-        """Строковое представление."""
-        return f"Равносторонний треугольник (сторона={self._side})"
-
     def __eq__(self, other) -> bool:
-        """Сравнение треугольников по площади."""
         if not isinstance(other, EquilateralTriangle):
             return NotImplemented
         return math.isclose(self.area(), other.area())
 
+    def __str__(self) -> str:
+        return f"Равносторонний треугольник (сторона={self._side})"
+
 
 if __name__ == "__main__":
-    print("=" * 50)
-    print("ЗАДАНИЕ 1: РАВНОСТОРОННИЙ ТРЕУГОЛЬНИК")
-    print("=" * 50)
+    t1 = EquilateralTriangle(5)
+    t2 = EquilateralTriangle(10)
 
-    t1 = EquilateralTriangle(5.0)
-    t2 = EquilateralTriangle(5.0)
-    t3 = EquilateralTriangle(10.0)
+    print(t1)
+    print(f"Площадь: {t1.area():.2f}")
+    print(f"Периметр: {t1.perimeter():.2f}")
 
-    print(f"\nТреугольник 1: {t1}")
-    print(f"  Периметр: {t1.perimeter():.2f}")
-    print(f"  Площадь: {t1.area():.2f}")
-
-    print(f"\nТреугольник 2: {t2}")
-    print(f"Треугольник 3: {t3}")
-
-    print(f"\nСравнение t1 == t2: {t1 == t2}")
-    print(f"Сравнение t1 == t3: {t1 == t3}")
-
-    print("\nИзменение стороны t1 на 10...")
-    t1.side = 10.0
-    print(f"Теперь t1 == t3: {t1 == t3}")
+    print("\nСравнение:")
+    print("t1 == t2:", t1 == t2)
 
