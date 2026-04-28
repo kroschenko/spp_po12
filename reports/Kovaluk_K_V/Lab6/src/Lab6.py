@@ -1,5 +1,6 @@
-import pytest
+# pylint: disable=redefined-outer-name
 from unittest.mock import patch, MagicMock
+import pytest
 import requests
 
 
@@ -47,8 +48,8 @@ class CharSet:
         self._max_size = max_size
         self._items = []
         if initial_chars:
-            for char in initial_chars:
-                self.add(char)
+            for ch in initial_chars:
+                self.add(ch)
 
     def get_items(self):
         return self._items.copy()
@@ -85,22 +86,22 @@ class CharSet:
     def union(self, other):
         combined_chars = list(set(self.get_items() + other.get_items()))
         new_set = CharSet(max(self.get_max_size(), other.get_max_size()))
-        for char in combined_chars:
-            new_set.add(char)
+        for ch in combined_chars:
+            new_set.add(ch)
         return new_set
 
     def intersection(self, other):
-        intersected_chars = [char for char in self.get_items() if char in other.get_items()]
+        intersected_chars = [ch for ch in self.get_items() if ch in other.get_items()]
         new_set = CharSet(min(self.get_max_size(), other.get_max_size()))
-        for char in intersected_chars:
-            new_set.add(char)
+        for ch in intersected_chars:
+            new_set.add(ch)
         return new_set
 
     def difference(self, other):
-        diff_chars = [char for char in self.get_items() if char not in other.get_items()]
+        diff_chars = [ch for ch in self.get_items() if ch not in other.get_items()]
         new_set = CharSet(self.get_max_size())
-        for char in diff_chars:
-            new_set.add(char)
+        for ch in diff_chars:
+            new_set.add(ch)
         return new_set
 
     def display(self):
@@ -141,26 +142,26 @@ def substring_between(str_input, open_str, close_str):
 
 
 @pytest.fixture
-def empty_cart():
+def cart():
     return Cart()
 
 
-def test_add_item(empty_cart):
-    empty_cart.add_item("Apple", 10.0)
-    assert len(empty_cart.items) == 1
-    assert empty_cart.items[0]["name"] == "Apple"
-    assert empty_cart.items[0]["price"] == 10.0
+def test_add_item(cart):
+    cart.add_item("Apple", 10.0)
+    assert len(cart.items) == 1
+    assert cart.items[0]["name"] == "Apple"
+    assert cart.items[0]["price"] == 10.0
 
 
-def test_add_item_negative_price(empty_cart):
+def test_add_item_negative_price(cart):
     with pytest.raises(ValueError, match="Price cannot be negative"):
-        empty_cart.add_item("Apple", -10.0)
+        cart.add_item("Apple", -10.0)
 
 
-def test_total(empty_cart):
-    empty_cart.add_item("Apple", 10.0)
-    empty_cart.add_item("Banana", 15.0)
-    assert empty_cart.total() == 25.0
+def test_total(cart):
+    cart.add_item("Apple", 10.0)
+    cart.add_item("Banana", 15.0)
+    assert cart.total() == 25.0
 
 
 @pytest.mark.parametrize("discount,expected_prices", [
@@ -168,51 +169,44 @@ def test_total(empty_cart):
     (50, [5.0, 7.5]),
     (100, [0.0, 0.0]),
 ])
-def test_apply_discount_valid(empty_cart, discount, expected_prices):
-    empty_cart.add_item("Apple", 10.0)
-    empty_cart.add_item("Banana", 15.0)
-    empty_cart.apply_discount(discount)
-
-    assert empty_cart.items[0]["price"] == expected_prices[0]
-    assert empty_cart.items[1]["price"] == expected_prices[1]
+def test_apply_discount_valid(cart, discount, expected_prices):
+    cart.add_item("Apple", 10.0)
+    cart.add_item("Banana", 15.0)
+    cart.apply_discount(discount)
+    assert cart.items[0]["price"] == expected_prices[0]
+    assert cart.items[1]["price"] == expected_prices[1]
 
 
 @pytest.mark.parametrize("discount", [-10, 110, -50, 150])
-def test_apply_discount_invalid(empty_cart, discount):
-    empty_cart.add_item("Apple", 10.0)
+def test_apply_discount_invalid(cart, discount):
+    cart.add_item("Apple", 10.0)
     with pytest.raises(ValueError, match="Discount must be between 0 and 100"):
-        empty_cart.apply_discount(discount)
+        cart.apply_discount(discount)
 
 
 @patch("requests.post")
 def test_log_purchase(mock_post):
     mock_response = MagicMock()
     mock_post.return_value = mock_response
-
     item = {"name": "Apple", "price": 10.0}
     log_purchase(item)
-
-    mock_post.assert_called_once_with(
-        "https://example.com/log",
-        json=item
-    )
+    mock_post.assert_called_once_with("https://example.com/log", json=item)
 
 
-def test_apply_coupon_valid(empty_cart):
-    empty_cart.add_item("Apple", 100.0)
-    apply_coupon(empty_cart, "SAVE10")
-    assert empty_cart.items[0]["price"] == 90.0
+def test_apply_coupon_valid(cart):
+    cart.add_item("Apple", 100.0)
+    apply_coupon(cart, "SAVE10")
+    assert cart.items[0]["price"] == 90.0
+    cart.clear()
+    cart.add_item("Banana", 100.0)
+    apply_coupon(cart, "HALF")
+    assert cart.items[0]["price"] == 50.0
 
-    empty_cart.clear()
-    empty_cart.add_item("Banana", 100.0)
-    apply_coupon(empty_cart, "HALF")
-    assert empty_cart.items[0]["price"] == 50.0
 
-
-def test_apply_coupon_invalid(empty_cart):
-    empty_cart.add_item("Apple", 100.0)
+def test_apply_coupon_invalid(cart):
+    cart.add_item("Apple", 100.0)
     with pytest.raises(ValueError, match="Invalid coupon"):
-        apply_coupon(empty_cart, "INVALID")
+        apply_coupon(cart, "INVALID")
 
 
 def test_char_set_add_valid_char():
