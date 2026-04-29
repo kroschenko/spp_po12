@@ -8,19 +8,18 @@ import pygame
 class Ball:
     """Класс шара, который может приближаться и удаляться."""
 
-    def __init__(self, x: int, y: int, radius: int, color: tuple, speed: float):
+    def __init__(self, position: tuple, radius: int, color: tuple, speed: float):
         """
         Инициализация шара.
 
         Args:
-            x: координата X центра
-            y: координата Y центра
+            position: кортеж (x, y) координат центра
             radius: начальный радиус
             color: цвет шара (R, G, B)
             speed: скорость изменения радиуса (пикселей в секунду)
         """
-        self.x = x
-        self.y = y
+        self.x = position[0]
+        self.y = position[1]
         self.radius = radius
         self.color = color
         self.speed = speed
@@ -91,7 +90,7 @@ class BallWithTrail(Ball):
             color: цвет шара (R, G, B)
             speed: скорость изменения радиуса
         """
-        super().__init__(position[0], position[1], radius, color, speed)
+        super().__init__(position, radius, color, speed)
         self.trail = []
         self.trail_length = 10
 

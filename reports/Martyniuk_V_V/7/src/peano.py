@@ -54,25 +54,33 @@ class PeanoCurve:
 
         if orientation == 0:  # Горизонтальная ориентация
             # Рисуем 9 подблоков в порядке Пеано
-            self._peano(x, y, new_size, order - 1, 1)
-            self._peano(x + new_size, y, new_size, order - 1, 1)
-            self._peano(x + 2 * new_size, y, new_size, order - 1, 0)
-            self._peano(x + 2 * new_size, y + new_size, new_size, order - 1, 0)
-            self._peano(x + new_size, y + new_size, new_size, order - 1, 1)
-            self._peano(x, y + new_size, new_size, order - 1, 1)
-            self._peano(x, y + 2 * new_size, new_size, order - 1, 0)
-            self._peano(x + new_size, y + 2 * new_size, new_size, order - 1, 0)
-            self._peano(x + 2 * new_size, y + 2 * new_size, new_size, order - 1, 1)
+            self._draw_horizontal_blocks(x, y, new_size, order)
         else:  # Вертикальная ориентация
-            self._peano(x, y, new_size, order - 1, 0)
-            self._peano(x, y + new_size, new_size, order - 1, 0)
-            self._peano(x, y + 2 * new_size, new_size, order - 1, 1)
-            self._peano(x + new_size, y + 2 * new_size, new_size, order - 1, 1)
-            self._peano(x + new_size, y + new_size, new_size, order - 1, 0)
-            self._peano(x + new_size, y, new_size, order - 1, 0)
-            self._peano(x + 2 * new_size, y, new_size, order - 1, 1)
-            self._peano(x + 2 * new_size, y + new_size, new_size, order - 1, 1)
-            self._peano(x + 2 * new_size, y + 2 * new_size, new_size, order - 1, 0)
+            self._draw_vertical_blocks(x, y, new_size, order)
+
+    def _draw_horizontal_blocks(self, x: float, y: float, new_size: float, order: int) -> None:
+        """Отрисовка горизонтальных блоков кривой Пеано."""
+        self._peano(x, y, new_size, order - 1, 1)
+        self._peano(x + new_size, y, new_size, order - 1, 1)
+        self._peano(x + 2 * new_size, y, new_size, order - 1, 0)
+        self._peano(x + 2 * new_size, y + new_size, new_size, order - 1, 0)
+        self._peano(x + new_size, y + new_size, new_size, order - 1, 1)
+        self._peano(x, y + new_size, new_size, order - 1, 1)
+        self._peano(x, y + 2 * new_size, new_size, order - 1, 0)
+        self._peano(x + new_size, y + 2 * new_size, new_size, order - 1, 0)
+        self._peano(x + 2 * new_size, y + 2 * new_size, new_size, order - 1, 1)
+
+    def _draw_vertical_blocks(self, x: float, y: float, new_size: float, order: int) -> None:
+        """Отрисовка вертикальных блоков кривой Пеано."""
+        self._peano(x, y, new_size, order - 1, 0)
+        self._peano(x, y + new_size, new_size, order - 1, 0)
+        self._peano(x, y + 2 * new_size, new_size, order - 1, 1)
+        self._peano(x + new_size, y + 2 * new_size, new_size, order - 1, 1)
+        self._peano(x + new_size, y + new_size, new_size, order - 1, 0)
+        self._peano(x + new_size, y, new_size, order - 1, 0)
+        self._peano(x + 2 * new_size, y, new_size, order - 1, 1)
+        self._peano(x + 2 * new_size, y + new_size, new_size, order - 1, 1)
+        self._peano(x + 2 * new_size, y + 2 * new_size, new_size, order - 1, 0)
 
     def draw(self, screen: pygame.Surface, color: tuple, line_width: int = 2) -> None:
         """

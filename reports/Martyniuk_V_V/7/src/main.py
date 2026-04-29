@@ -29,10 +29,10 @@ class BallAnimationApp:
         if not os.path.exists(self.screenshot_dir):
             os.makedirs(self.screenshot_dir)
 
-        # Создаём шар
+        # Создаём шар (используем новый конструктор с position)
         ball_x = WINDOW_WIDTH // 2
         ball_y = (WINDOW_HEIGHT - 80) // 2
-        self.ball = Ball(ball_x, ball_y, BALL_START_RADIUS, BALL_COLOR, 50)
+        self.ball = Ball((ball_x, ball_y), BALL_START_RADIUS, BALL_COLOR, 50)
 
         # Создаём панель управления
         self.control_panel = ControlPanel(WINDOW_WIDTH, WINDOW_HEIGHT)
