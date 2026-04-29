@@ -34,9 +34,9 @@ class PeanoCurve:
     def generate(self) -> None:
         """Генерация точек кривой Пеано."""
         self.points = []
-        self._peano(self.x, self.y, self.size, self.order, 0)
+        self._peano(self.x, self.y, self.size, self.order)
 
-    def _peano(self, x: float, y: float, size: float, order: int, orientation: int) -> None:
+    def _peano(self, x: float, y: float, size: float, order: int) -> None:
         """
         Рекурсивная генерация кривой Пеано.
 
@@ -44,43 +44,42 @@ class PeanoCurve:
             x, y: координаты текущего блока
             size: размер текущего блока
             order: оставшийся порядок
-            orientation: ориентация (0 - горизонтальная, 1 - вертикальная)
         """
         if order == 0:
             self.points.append((x, y))
             return
 
         new_size = size / 3
+        orientation = (order % 2)  # 0 - горизонтальная, 1 - вертикальная
 
         if orientation == 0:  # Горизонтальная ориентация
-            # Рисуем 9 подблоков в порядке Пеано
             self._draw_horizontal_blocks(x, y, new_size, order)
         else:  # Вертикальная ориентация
             self._draw_vertical_blocks(x, y, new_size, order)
 
     def _draw_horizontal_blocks(self, x: float, y: float, new_size: float, order: int) -> None:
         """Отрисовка горизонтальных блоков кривой Пеано."""
-        self._peano(x, y, new_size, order - 1, 1)
-        self._peano(x + new_size, y, new_size, order - 1, 1)
-        self._peano(x + 2 * new_size, y, new_size, order - 1, 0)
-        self._peano(x + 2 * new_size, y + new_size, new_size, order - 1, 0)
-        self._peano(x + new_size, y + new_size, new_size, order - 1, 1)
-        self._peano(x, y + new_size, new_size, order - 1, 1)
-        self._peano(x, y + 2 * new_size, new_size, order - 1, 0)
-        self._peano(x + new_size, y + 2 * new_size, new_size, order - 1, 0)
-        self._peano(x + 2 * new_size, y + 2 * new_size, new_size, order - 1, 1)
+        self._peano(x, y, new_size, order - 1)
+        self._peano(x + new_size, y, new_size, order - 1)
+        self._peano(x + 2 * new_size, y, new_size, order - 1)
+        self._peano(x + 2 * new_size, y + new_size, new_size, order - 1)
+        self._peano(x + new_size, y + new_size, new_size, order - 1)
+        self._peano(x, y + new_size, new_size, order - 1)
+        self._peano(x, y + 2 * new_size, new_size, order - 1)
+        self._peano(x + new_size, y + 2 * new_size, new_size, order - 1)
+        self._peano(x + 2 * new_size, y + 2 * new_size, new_size, order - 1)
 
     def _draw_vertical_blocks(self, x: float, y: float, new_size: float, order: int) -> None:
         """Отрисовка вертикальных блоков кривой Пеано."""
-        self._peano(x, y, new_size, order - 1, 0)
-        self._peano(x, y + new_size, new_size, order - 1, 0)
-        self._peano(x, y + 2 * new_size, new_size, order - 1, 1)
-        self._peano(x + new_size, y + 2 * new_size, new_size, order - 1, 1)
-        self._peano(x + new_size, y + new_size, new_size, order - 1, 0)
-        self._peano(x + new_size, y, new_size, order - 1, 0)
-        self._peano(x + 2 * new_size, y, new_size, order - 1, 1)
-        self._peano(x + 2 * new_size, y + new_size, new_size, order - 1, 1)
-        self._peano(x + 2 * new_size, y + 2 * new_size, new_size, order - 1, 0)
+        self._peano(x, y, new_size, order - 1)
+        self._peano(x, y + new_size, new_size, order - 1)
+        self._peano(x, y + 2 * new_size, new_size, order - 1)
+        self._peano(x + new_size, y + 2 * new_size, new_size, order - 1)
+        self._peano(x + new_size, y + new_size, new_size, order - 1)
+        self._peano(x + new_size, y, new_size, order - 1)
+        self._peano(x + 2 * new_size, y, new_size, order - 1)
+        self._peano(x + 2 * new_size, y + new_size, new_size, order - 1)
+        self._peano(x + 2 * new_size, y + 2 * new_size, new_size, order - 1)
 
     def draw(self, screen: pygame.Surface, color: tuple, line_width: int = 2) -> None:
         """
@@ -94,7 +93,6 @@ class PeanoCurve:
         if len(self.points) < 2:
             return
 
-        # Рисуем линии между точками
         for i in range(len(self.points) - 1):
             start = (int(self.points[i][0]), int(self.points[i][1]))
             end = (int(self.points[i + 1][0]), int(self.points[i + 1][1]))
