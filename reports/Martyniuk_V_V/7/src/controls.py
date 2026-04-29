@@ -10,20 +10,17 @@ from config import PANEL_HEIGHT, MIN_SPEED, MAX_SPEED, TEXT_COLOR, PANEL_COLOR
 class Button:
     """Класс кнопки."""
 
-    def __init__(self, x: int, y: int, width: int, height: int, text: str, color: tuple, hover_color: tuple):
+    def __init__(self, rect: pygame.Rect, text: str, color: tuple, hover_color: tuple):
         """
         Инициализация кнопки.
 
         Args:
-            x: координата X
-            y: координата Y
-            width: ширина
-            height: высота
+            rect: прямоугольник кнопки
             text: текст на кнопке
             color: цвет кнопки
             hover_color: цвет при наведении
         """
-        self.rect = pygame.Rect(x, y, width, height)
+        self.rect = rect
         self.text = text
         self.color = color
         self.hover_color = hover_color
@@ -61,20 +58,17 @@ class Button:
 class Slider:
     """Класс ползунка для регулировки скорости."""
 
-    def __init__(self, x: int, y: int, width: int, height: int, min_val: float, max_val: float, initial_val: float):
+    def __init__(self, rect: pygame.Rect, min_val: float, max_val: float, initial_val: float):
         """
         Инициализация ползунка.
 
         Args:
-            x: координата X
-            y: координата Y
-            width: ширина
-            height: высота
+            rect: прямоугольник ползунка
             min_val: минимальное значение
             max_val: максимальное значение
             initial_val: начальное значение
         """
-        self.rect = pygame.Rect(x, y, width, height)
+        self.rect = rect
         self.min_val = min_val
         self.max_val = max_val
         self.value = initial_val
@@ -140,18 +134,34 @@ class ControlPanel:
         button_height = 40
         button_y = screen_height - PANEL_HEIGHT + (PANEL_HEIGHT - button_height) // 2
 
-        self.pause_button = Button(20, button_y, button_width, button_height, "Пауза", (150, 200, 150), (100, 150, 100))
+        self.pause_button = Button(
+            pygame.Rect(20, button_y, button_width, button_height),
+            "Пауза",
+            (150, 200, 150),
+            (100, 150, 100)
+        )
 
         self.reset_button = Button(
-            140, button_y, button_width, button_height, "Сброс", (200, 150, 150), (150, 100, 100)
+            pygame.Rect(140, button_y, button_width, button_height),
+            "Сброс",
+            (200, 150, 150),
+            (150, 100, 100)
         )
 
         self.screenshot_button = Button(
-            260, button_y, button_width, button_height, "Скриншот", (150, 150, 200), (100, 100, 150)
+            pygame.Rect(260, button_y, button_width, button_height),
+            "Скриншот",
+            (150, 150, 200),
+            (100, 100, 150)
         )
 
         # Создаём ползунок скорости
-        self.speed_slider = Slider(400, screen_height - PANEL_HEIGHT + 20, 200, 30, MIN_SPEED, MAX_SPEED, 50)
+        self.speed_slider = Slider(
+            pygame.Rect(400, screen_height - PANEL_HEIGHT + 20, 200, 30),
+            MIN_SPEED,
+            MAX_SPEED,
+            50
+        )
 
         # Информационная панель
         self.info_font = pygame.font.Font(None, 24)

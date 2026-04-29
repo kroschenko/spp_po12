@@ -2,9 +2,9 @@
 Модуль для построения кривой Пеано (фрактал).
 """
 
-import pygame
-import math
 from typing import List, Tuple
+
+import pygame
 
 
 class PeanoCurve:
@@ -29,7 +29,7 @@ class PeanoCurve:
         self.y = y
         self.size = size
         self.order = order
-        self.points = []
+        self.points: List[Tuple[float, float]] = []
         self.generate()
 
     def generate(self) -> None:

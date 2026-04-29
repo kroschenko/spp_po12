@@ -5,7 +5,9 @@
 import sys
 import os
 from datetime import datetime
+
 import pygame
+
 from config import WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, BALL_COLOR, BALL_START_RADIUS, BACKGROUND_COLOR, FPS
 from ball import Ball
 from controls import ControlPanel
