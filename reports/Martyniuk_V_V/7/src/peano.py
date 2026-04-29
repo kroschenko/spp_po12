@@ -50,7 +50,7 @@ class PeanoCurve:
             return
 
         new_size = size / 3
-        orientation = (order % 2)  # 0 - горизонтальная, 1 - вертикальная
+        orientation = order % 2  # 0 - горизонтальная, 1 - вертикальная
 
         if orientation == 0:  # Горизонтальная ориентация
             self._draw_horizontal_blocks(x, y, new_size, order)
