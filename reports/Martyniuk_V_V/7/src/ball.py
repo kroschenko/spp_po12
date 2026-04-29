@@ -81,9 +81,17 @@ class Ball:
 class BallWithTrail(Ball):
     """Шар с эффектом следа."""
 
-    def __init__(self, x: int, y: int, radius: int, color: tuple, speed: float):
-        """Инициализация шара со следом."""
-        super().__init__(x, y, radius, color, speed)
+    def __init__(self, position: tuple, radius: int, color: tuple, speed: float):
+        """
+        Инициализация шара со следом.
+
+        Args:
+            position: кортеж (x, y) координат центра
+            radius: начальный радиус
+            color: цвет шара (R, G, B)
+            speed: скорость изменения радиуса
+        """
+        super().__init__(position[0], position[1], radius, color, speed)
         self.trail = []
         self.trail_length = 10
 
@@ -103,4 +111,3 @@ class BallWithTrail(Ball):
             pygame.draw.circle(trail_surface, trail_color, (self.x, self.y), int(trail_radius))
             screen.blit(trail_surface, (0, 0))
         super().draw(screen)
-        

@@ -28,15 +28,6 @@ class Button:
     """Класс кнопки."""
 
     def __init__(self, rect: pygame.Rect, text: str, color: tuple, hover_color: tuple):
-        """
-        Инициализация кнопки.
-
-        Args:
-            rect: прямоугольник кнопки
-            text: текст на кнопке
-            color: цвет кнопки
-            hover_color: цвет при наведении
-        """
         self.rect = rect
         self.text = text
         self.color = color
@@ -71,15 +62,6 @@ class Slider:
     """Класс ползунка."""
 
     def __init__(self, rect: pygame.Rect, min_val: float, max_val: float, initial_val: float):
-        """
-        Инициализация ползунка.
-
-        Args:
-            rect: прямоугольник ползунка
-            min_val: минимальное значение
-            max_val: максимальное значение
-            initial_val: начальное значение
-        """
         self.rect = rect
         self.min_val = min_val
         self.max_val = max_val
@@ -107,21 +89,18 @@ class Slider:
 
     def handle_event(self, event: pygame.event.Event) -> None:
         """Обработка событий ползунка."""
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:
-                knob_x = self.rect.x + (self.value - self.min_val) / (self.max_val - self.min_val) * self.rect.width
-                if (
-                    abs(event.pos[0] - knob_x) <= self.knob_radius
-                    and abs(event.pos[1] - self.rect.centery) <= self.knob_radius
-                ):
-                    self.dragging = True
-        elif event.type == pygame.MOUSEBUTTONUP:
-            if event.button == 1:
-                self.dragging = False
-        elif event.type == pygame.MOUSEMOTION:
-            if self.dragging:
-                relative_x = max(0, min(self.rect.width, event.pos[0] - self.rect.x))
-                self.value = self.min_val + (relative_x / self.rect.width) * (self.max_val - self.min_val)
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            knob_x = self.rect.x + (self.value - self.min_val) / (self.max_val - self.min_val) * self.rect.width
+            if (
+                abs(event.pos[0] - knob_x) <= self.knob_radius
+                and abs(event.pos[1] - self.rect.centery) <= self.knob_radius
+            ):
+                self.dragging = True
+        elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+            self.dragging = False
+        elif event.type == pygame.MOUSEMOTION and self.dragging:
+            relative_x = max(0, min(self.rect.width, event.pos[0] - self.rect.x))
+            self.value = self.min_val + (relative_x / self.rect.width) * (self.max_val - self.min_val)
 
     def get_value(self) -> float:
         """Получение текущего значения."""
@@ -150,8 +129,13 @@ class PeanoApp:
         self.drawing_x = (WINDOW_WIDTH - drawing_size) // 2
         self.drawing_y = margin
 
-        # Создаём кривую
-        self.curve = AnimatedPeanoCurve(self.drawing_x, self.drawing_y, drawing_size, DEFAULT_ORDER, DEFAULT_SPEED)
+        # Создаём кривую (используем новый конструктор с одним аргументом position)
+        self.curve = AnimatedPeanoCurve(
+            (self.drawing_x, self.drawing_y),
+            drawing_size,
+            DEFAULT_ORDER,
+            DEFAULT_SPEED
+        )
 
         # Создаём элементы управления
         self.create_controls()
@@ -188,7 +172,6 @@ class PeanoApp:
             (100, 100, 150)
         )
 
-        # Кнопки изменения порядка
         self.order_down_button = Button(
             pygame.Rect(400, button_y, 40, button_height),
             "-",
@@ -203,7 +186,6 @@ class PeanoApp:
             (150, 150, 150)
         )
 
-        # Ползунок скорости
         self.speed_slider = Slider(
             pygame.Rect(560, panel_y + 20, 200, 30),
             10,
@@ -211,7 +193,6 @@ class PeanoApp:
             DEFAULT_SPEED
         )
 
-        # Шрифты
         self.font = pygame.font.Font(None, 24)
         self.title_font = pygame.font.Font(None, 36)
 
@@ -224,7 +205,6 @@ class PeanoApp:
         pygame.image.save(self.screen, filepath)
         print(f"Скриншот сохранён: {filepath}")
 
-        # Визуальный отклик
         flash_surface = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
         flash_surface.set_alpha(128)
         flash_surface.fill((255, 255, 255))
@@ -235,8 +215,7 @@ class PeanoApp:
     def regenerate_curve(self) -> None:
         """Перегенерация кривой с новыми параметрами."""
         self.curve = AnimatedPeanoCurve(
-            self.drawing_x,
-            self.drawing_y,
+            (self.drawing_x, self.drawing_y),
             self.curve.size,
             self.curve.order,
             self.speed_slider.get_value(),
@@ -285,43 +264,32 @@ class PeanoApp:
             elif event.type == pygame.KEYDOWN:
                 self._handle_key_events(event)
 
-            # Обработка кнопок
             self._handle_button_events(event)
-
-            # Обработка ползунка
             self.speed_slider.handle_event(event)
 
     def update(self, delta_time: float) -> None:
         """Обновление состояния."""
-        # Обновляем скорость анимации
         self.curve.set_speed(self.speed_slider.get_value())
-
-        # Обновляем кривую
         self.curve.update(delta_time)
 
     def draw_control_panel(self) -> None:
         """Отрисовка панели управления."""
         panel_y = WINDOW_HEIGHT - PANEL_HEIGHT
 
-        # Фон панели
         pygame.draw.rect(self.screen, (220, 220, 220), (0, panel_y, WINDOW_WIDTH, PANEL_HEIGHT))
         pygame.draw.line(self.screen, (0, 0, 0), (0, panel_y), (WINDOW_WIDTH, panel_y), 2)
 
-        # Кнопки
         self.pause_button.draw(self.screen)
         self.reset_button.draw(self.screen)
         self.screenshot_button.draw(self.screen)
         self.order_down_button.draw(self.screen)
         self.order_up_button.draw(self.screen)
 
-        # Отображение текущего порядка
         order_text = self.font.render(f"Порядок: {self.curve.order}", True, (0, 0, 0))
         self.screen.blit(order_text, (430, panel_y + 50))
 
-        # Ползунок скорости
         self.speed_slider.draw(self.screen)
 
-        # Информация о кривой
         info = self.curve.get_info()
         info_y = panel_y + 10
         info_texts = [
@@ -334,7 +302,6 @@ class PeanoApp:
             text_surface = self.font.render(text, True, (0, 0, 0))
             self.screen.blit(text_surface, (780, info_y + i * 25))
 
-        # Подсказки
         help_y = panel_y + 10
         help_texts = [
             "Управление:",
@@ -353,29 +320,19 @@ class PeanoApp:
         """Отрисовка всех элементов."""
         self.screen.fill(BACKGROUND_COLOR)
 
-        # Рисуем рамку для области рисования
         pygame.draw.rect(
             self.screen,
             (200, 200, 200),
-            (
-                self.drawing_x - 2,
-                self.drawing_y - 2,
-                self.curve.size + 4,
-                self.curve.size + 4,
-            ),
+            (self.drawing_x - 2, self.drawing_y - 2, self.curve.size + 4, self.curve.size + 4),
             2,
         )
 
-        # Рисуем кривую Пеано
         self.curve.draw(self.screen, LINE_COLOR, 2)
 
-        # Рисуем заголовок
         title = self.title_font.render("Кривая Пеано (Пространственно-заполняющая кривая)", True, (0, 0, 0))
         self.screen.blit(title, (WINDOW_WIDTH // 2 - title.get_width() // 2, 10))
 
-        # Рисуем панель управления
         self.draw_control_panel()
-
         pygame.display.flip()
 
     def run(self) -> None:

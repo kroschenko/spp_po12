@@ -15,18 +15,17 @@ class PeanoCurve:
     которая проходит через каждую точку квадрата.
     """
 
-    def __init__(self, x: int, y: int, size: int, order: int):
+    def __init__(self, position: tuple, size: int, order: int):
         """
         Инициализация кривой Пеано.
 
         Args:
-            x: координата X верхнего левого угла
-            y: координата Y верхнего левого угла
+            position: кортеж (x, y) координат верхнего левого угла
             size: размер области для рисования
             order: порядок кривой (глубина рекурсии)
         """
-        self.x = x
-        self.y = y
+        self.x = position[0]
+        self.y = position[1]
         self.size = size
         self.order = order
         self.points: List[Tuple[float, float]] = []
@@ -101,9 +100,18 @@ class PeanoCurve:
 class AnimatedPeanoCurve(PeanoCurve):
     """Анимированная версия кривой Пеано (строится постепенно)."""
 
-    def __init__(self, x: int, y: int, size: int, order: int, animation_speed: float = 50):
-        super().__init__(x, y, size, order)
-        self.animation_speed = animation_speed  # точек в секунду
+    def __init__(self, position: tuple, size: int, order: int, animation_speed: float = 50):
+        """
+        Инициализация анимированной кривой Пеано.
+
+        Args:
+            position: кортеж (x, y) координат верхнего левого угла
+            size: размер области для рисования
+            order: порядок кривой
+            animation_speed: скорость анимации (точек в секунду)
+        """
+        super().__init__(position, size, order)
+        self.animation_speed = animation_speed
         self.current_point = 0
         self.animation_complete = False
         self.paused = False
@@ -113,7 +121,6 @@ class AnimatedPeanoCurve(PeanoCurve):
         if self.paused or self.animation_complete:
             return
 
-        # Добавляем новые точки в анимацию
         points_to_add = int(self.animation_speed * delta_time)
         self.current_point = min(self.current_point + points_to_add, len(self.points))
 
@@ -125,7 +132,6 @@ class AnimatedPeanoCurve(PeanoCurve):
         if self.current_point < 2:
             return
 
-        # Рисуем только видимую часть кривой
         for i in range(min(self.current_point, len(self.points)) - 1):
             start = (int(self.points[i][0]), int(self.points[i][1]))
             end = (int(self.points[i + 1][0]), int(self.points[i + 1][1]))
