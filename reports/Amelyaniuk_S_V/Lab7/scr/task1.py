@@ -2,12 +2,14 @@ import tkinter as tk
 from tkinter import filedialog
 import math
 import colorsys
-from PIL import ImageGrab # Для скриншотов
+from PIL import ImageGrab  # Для скриншотов
+
 
 class Point:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+
 
 class RotatingLine:
     def __init__(self, canvas):
@@ -24,30 +26,30 @@ class RotatingLine:
         if self.is_running:
             self.angle += self.speed
             self.hue = (self.hue + 0.01) % 1.0
-            
+
             # Расчет координат конца отрезка
             x_end = self.center.x + self.length * math.cos(self.angle)
             y_end = self.center.y + self.length * math.sin(self.angle)
-            
+
             # Перевод HSV в RGB для изменения цвета
             rgb = colorsys.hsv_to_rgb(self.hue, 1.0, 1.0)
-            color = '#%02x%02x%02x' % tuple(int(x*255) for x in rgb)
-            
+            color = "#%02x%02x%02x" % tuple(int(x * 255) for x in rgb)
+
             if self.line_id:
                 self.canvas.delete(self.line_id)
-            
+
             self.line_id = self.canvas.create_line(
-                self.center.x, self.center.y, x_end, y_end, 
-                fill=color, width=3
+                self.center.x, self.center.y, x_end, y_end, fill=color, width=3
             )
-        
+
         self.canvas.after(20, self.update)
+
 
 # Создание окна
 root = tk.Tk()
 root.title("Лаба 7 - Задание 1 (Вариант 5)")
 
-canvas = tk.Canvas(root, width=600, height=500, bg='white')
+canvas = tk.Canvas(root, width=600, height=500, bg="white")
 canvas.pack()
 
 line_app = RotatingLine(canvas)
@@ -56,9 +58,11 @@ line_app = RotatingLine(canvas)
 controls = tk.Frame(root)
 controls.pack()
 
+
 def toggle_pause():
     line_app.is_running = not line_app.is_running
     btn_pause.config(text="Старт" if not line_app.is_running else "Пауза")
+
 
 def make_screenshot():
     x = root.winfo_rootx() + canvas.winfo_x()
@@ -68,12 +72,19 @@ def make_screenshot():
     ImageGrab.grab().crop((x, y, x1, y1)).save("screenshot_line.png")
     print("Скриншот сохранен!")
 
+
 btn_pause = tk.Button(controls, text="Пауза", command=toggle_pause)
 btn_pause.pack(side=tk.LEFT)
 
 tk.Label(controls, text="Скорость:").pack(side=tk.LEFT)
-scale_speed = tk.Scale(controls, from_=0, to=0.2, resolution=0.01, orient=tk.HORIZONTAL,
-                       command=lambda v: setattr(line_app, 'speed', float(v)))
+scale_speed = tk.Scale(
+    controls,
+    from_=0,
+    to=0.2,
+    resolution=0.01,
+    orient=tk.HORIZONTAL,
+    command=lambda v: setattr(line_app, "speed", float(v)),
+)
 scale_speed.set(0.05)
 scale_speed.pack(side=tk.LEFT)
 

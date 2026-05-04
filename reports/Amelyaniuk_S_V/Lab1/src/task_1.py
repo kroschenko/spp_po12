@@ -3,6 +3,7 @@ def range_of_sequence(numbers):
         return 0
     return max(numbers) - min(numbers)
 
+
 def main():
     print("=== Задание 1 ===")
     
@@ -12,9 +13,10 @@ def main():
             if not nums_input:
                 print("Ошибка: пустой ввод. Попробуйте снова.")
                 continue
-                
+
             numbers = list(map(int, nums_input.split()))
             break
+
         except ValueError:
             print("Ошибка: введите только целые числа, разделенные пробелами.")
     
@@ -23,6 +25,7 @@ def main():
     print(f"Максимальное значение: {max(numbers)}")
     print(f"Минимальное значение: {min(numbers)}")
     print(f"Размах последовательности (разница между max и min): {result}")
+
 
 if __name__ == "__main__":
     main()

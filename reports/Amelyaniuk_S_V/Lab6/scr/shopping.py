@@ -1,5 +1,6 @@
 import requests
 
+
 class Cart:
     def __init__(self):
         self.items = []
@@ -16,10 +17,12 @@ class Cart:
         if not (0 <= percent <= 100):
             raise ValueError("Неверный процент скидки")
         for item in self.items:
-            item["price"] *= (1 - percent / 100)
+            item["price"] *= 1 - percent / 100
+
 
 def log_purchase(item):
     requests.post("https://example.com/log", json=item)
+
 
 def apply_coupon(cart, coupon_code):
     coupons = {"SAVE10": 10, "HALF": 50}

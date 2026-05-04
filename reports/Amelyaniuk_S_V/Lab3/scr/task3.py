@@ -1,25 +1,31 @@
 from abc import ABC, abstractmethod
 
+
 # --- Интерфейс Состояния ---
 class ATMState(ABC):
     @abstractmethod
-    def enter_pin(self, atm, pin: str): pass
+    def enter_pin(self, atm, pin: str):
+        pass
 
     @abstractmethod
-    def withdraw(self, atm, amount: int): pass
+    def withdraw(self, atm, amount: int):
+        pass
 
     @abstractmethod
-    def finish(self, atm): pass
+    def finish(self, atm):
+        pass
 
 
 # --- Конкретные состояния ---
 
+
 class IdleState(ATMState):
     """Состояние ожидания"""
+
     def enter_pin(self, atm, pin: str):
         print(f"[ATM {atm.id}] Пин-код введен. Переход к аутентификации...")
         atm.set_state(AuthState())
-        atm.enter_pin(pin) # Вызываем проверку в новом состоянии
+        atm.enter_pin(pin)  # Вызываем проверку в новом состоянии
 
     def withdraw(self, atm, amount: int):
         print("Ошибка: Сначала введите пин-код!")
@@ -30,6 +36,7 @@ class IdleState(ATMState):
 
 class AuthState(ATMState):
     """Состояние аутентификации"""
+
     def enter_pin(self, atm, pin: str):
         if pin == "1234":
             print("Пин-код верный. Доступ разрешен.")
@@ -47,6 +54,7 @@ class AuthState(ATMState):
 
 class TransactionState(ATMState):
     """Состояние выполнения операций"""
+
     def enter_pin(self, atm, pin: str):
         print("Вы уже авторизованы.")
 
@@ -66,6 +74,7 @@ class TransactionState(ATMState):
 
 class BlockedState(ATMState):
     """Состояние блокировки (нет денег)"""
+
     def enter_pin(self, atm, pin: str):
         print("Банкомат заблокирован: нет наличных.")
 
@@ -106,7 +115,7 @@ if __name__ == "__main__":
     my_atm = ATM(atm_id="SBER-001", initial_money=5000)
 
     print(f"--- Работа с банкоматом {my_atm.id} ---")
-    
+
     # Попытка снять без пина
     my_atm.withdraw(1000)
 
@@ -117,7 +126,7 @@ if __name__ == "__main__":
 
     print("\n--- Новая сессия (Снятие всей суммы) ---")
     my_atm.enter_pin("1234")
-    my_atm.withdraw(3000) # Денег больше нет
-    
+    my_atm.withdraw(3000)  # Денег больше нет
+
     print("\n--- Попытка работы после опустошения ---")
     my_atm.enter_pin("1234")

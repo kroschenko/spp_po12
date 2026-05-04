@@ -3,7 +3,7 @@ class IntSet:
 
         self._max_size = max_size
         self._data = []
-        
+
         if values:
             for v in values:
                 self.add(v)
@@ -33,12 +33,12 @@ class IntSet:
     def union(self, other):
         new_capacity = self.max_size + other.max_size
         new_set = IntSet(new_capacity)
-        
+
         for x in self._data:
             new_set.add(x)
         for x in other._data:
             new_set.add(x)
-            
+
         return new_set
 
     def __str__(self):
@@ -49,16 +49,17 @@ class IntSet:
             return False
         return sorted(self._data) == sorted(other._data)
 
+
 if __name__ == "__main__":
     print("\n=== ТЕСТ ===")
     s1 = IntSet(3, [10, 20])
-    s2 = IntSet(3, [20, 30, "NotInt"]) 
-    
+    s2 = IntSet(3, [20, 30, "NotInt"])
+
     print(f"Сет 1: {s1}")
     print(f"Сет 2: {s2}")
-    
+
     s3 = s1.union(s2)
     print(f"Объединение (s1 + s2): {s3}")
-    
+
     s4 = IntSet(5, [30, 10, 20])
-    print(f"Равны ли s3 и s4? -> {s3 == s4}") 
+    print(f"Равны ли s3 и s4? -> {s3 == s4}")

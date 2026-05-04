@@ -1,11 +1,12 @@
 class Book:
     def __init__(self, title, is_rare=False):
         self.title = title
-        self.is_rare = is_rare 
+        self.is_rare = is_rare
 
     def __repr__(self):
         type_str = "(Редкая)" if self.is_rare else ""
         return f"Книга '{self.title}' {type_str}"
+
 
 class Order:
     def __init__(self, reader, book_title):
@@ -15,13 +16,14 @@ class Order:
 
 class Catalog:
     def __init__(self):
-        self.books = {} 
+        self.books = {}
 
     def add_book(self, book):
         self.books[book.title] = book
 
     def find(self, title):
         return self.books.get(title)
+
 
 class Reader:
     def __init__(self, name):
@@ -44,12 +46,15 @@ class Reader:
 
     def __str__(self):
         status = "[В ЧЕРНОМ СПИСКЕ]" if self.in_blacklist else "[OK]"
-        return f"Читатель: {self.name} {status}. Книг на руках: {len(self.books_on_hands)}"
+        return (
+            f"Читатель: {self.name} {status}. Книг на руках: {len(self.books_on_hands)}"
+        )
+
 
 class Librarian:
     def process_order(self, order, catalog):
         reader = order.reader
-        
+
         if reader.in_blacklist:
             print(f"Библиотекарь: отказ. {reader.name} в черном списке.")
             return
@@ -63,6 +68,7 @@ class Librarian:
         print(f"Библиотекарь: Выдаю '{book.title}' {place} читателю {reader.name}.")
         reader.receive_book(book)
 
+
 class Administrator:
     def check_debts(self, readers):
         print("\n[Админ проверяет должников]")
@@ -72,6 +78,7 @@ class Administrator:
                 r.in_blacklist = True
             else:
                 print(f"Чек: {r.name} — всё чисто.")
+
 
 if __name__ == "__main__":
     print("\n--- ТЕСТ ---")
