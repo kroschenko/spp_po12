@@ -49,9 +49,6 @@ class Audi(Car):
         super().__init__("Audi")
 
 
-# Абстрактный пульт ДУ
-
-
 class RemoteControl(ABC):
 
     def __init__(self, car):
@@ -68,9 +65,6 @@ class RemoteControl(ABC):
     @abstractmethod
     def engine(self):
         pass
-
-
-# Конкретные пульты
 
 
 class StandardRemote(RemoteControl):
@@ -119,7 +113,55 @@ class SmartRemote(RemoteControl):
         print("Контроль температуры салона включен")
 
 
-# Меню
+def choose_car():
+    print("1. BMW")
+    print("2. Toyota")
+    print("3. Audi")
+
+    car_choice = input("Выберите автомобиль: ")
+
+    if car_choice == "1":
+        return BMW()
+    if car_choice == "2":
+        return Toyota()
+    if car_choice == "3":
+        return Audi()
+
+    return None
+
+
+def choose_remote(car):
+    if car is None:
+        print("Сначала выберите автомобиль")
+        return None
+
+    print("1. Стандартный пульт")
+    print("2. Премиум пульт")
+    print("3. Смарт пульт")
+
+    remote_choice = input("Выберите пульт: ")
+
+    if remote_choice == "1":
+        return StandardRemote(car)
+    if remote_choice == "2":
+        return PremiumRemote(car)
+    if remote_choice == "3":
+        return SmartRemote(car)
+
+    return None
+
+
+def remote_action(remote, action):
+    if not remote:
+        print("Сначала выберите пульт")
+        return
+
+    if action == "alarm":
+        remote.alarm()
+    elif action == "doors":
+        remote.doors()
+    elif action == "engine":
+        remote.engine()
 
 
 def main():
@@ -139,49 +181,19 @@ def main():
         choice = input("Выберите пункт: ")
 
         if choice == "1":
-            print("1. BMW")
-            print("2. Toyota")
-            print("3. Audi")
-
-            car_choice = input("Выберите автомобиль: ")
-
-            if car_choice == "1":
-                car = BMW()
-            elif car_choice == "2":
-                car = Toyota()
-            elif car_choice == "3":
-                car = Audi()
+            car = choose_car()
 
         elif choice == "2":
-
-            if car is None:
-                print("Сначала выберите автомобиль")
-                continue
-
-            print("1. Стандартный пульт")
-            print("2. Премиум пульт")
-            print("3. Смарт пульт")
-
-            remote_choice = input("Выберите пульт: ")
-
-            if remote_choice == "1":
-                remote = StandardRemote(car)
-            elif remote_choice == "2":
-                remote = PremiumRemote(car)
-            elif remote_choice == "3":
-                remote = SmartRemote(car)
+            remote = choose_remote(car)
 
         elif choice == "3":
-            if remote:
-                remote.alarm()
+            remote_action(remote, "alarm")
 
         elif choice == "4":
-            if remote:
-                remote.doors()
+            remote_action(remote, "doors")
 
         elif choice == "5":
-            if remote:
-                remote.engine()
+            remote_action(remote, "engine")
 
         elif choice == "0":
             break

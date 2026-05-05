@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 
 
-# Абстрактный класс Студент
 class Student(ABC):
 
     def __init__(self, name):
@@ -13,7 +12,6 @@ class Student(ABC):
         pass
 
 
-# Конкретные классы студентов
 class BachelorStudent(Student):
 
     def study(self):
@@ -26,20 +24,17 @@ class MasterStudent(Student):
         print(f"Магистр {self.name} изучает углубленный курс.")
 
 
-# Фабрика студентов (Factory Method)
 class StudentFactory:
 
     @staticmethod
     def create_student(student_type, name):
         if student_type == "1":
             return BachelorStudent(name)
-        elif student_type == "2":
+        if student_type == "2":
             return MasterStudent(name)
-        else:
-            raise ValueError("Неизвестный тип студента")
+        raise ValueError("Неизвестный тип студента")
 
 
-# Класс Преподаватель
 class Teacher:
 
     def __init__(self, name):
@@ -78,7 +73,37 @@ class Teacher:
             print(f"{i + 1}. {student.name}")
 
 
-# Главное меню
+def menu_add_student(teacher):
+    print("1 - Бакалавр")
+    print("2 - Магистр")
+    student_type = input("Тип студента: ")
+    name = input("Имя студента: ")
+
+    student = StudentFactory.create_student(student_type, name)
+    teacher.add_student(student)
+
+
+def menu_student_action(teacher, choice):
+    teacher.show_students()
+    num = int(input("Выберите студента: ")) - 1
+
+    if num < 0 or num >= len(teacher.students):
+        print("Неверный выбор")
+        return
+
+    student = teacher.students[num]
+
+    if choice == "3":
+        teacher.check_lab(student)
+    elif choice == "4":
+        teacher.consult(student)
+    elif choice == "5":
+        teacher.exam(student)
+    elif choice == "6":
+        grade = input("Введите оценку: ")
+        teacher.grade(student, grade)
+
+
 def main():
 
     teacher = Teacher("Иванов")
@@ -97,39 +122,13 @@ def main():
         choice = input("Выберите пункт: ")
 
         if choice == "1":
-            print("1 - Бакалавр")
-            print("2 - Магистр")
-            student_type = input("Тип студента: ")
-            name = input("Имя студента: ")
-
-            student = StudentFactory.create_student(student_type, name)
-            teacher.add_student(student)
+            menu_add_student(teacher)
 
         elif choice == "2":
             teacher.lecture()
 
         elif choice in ["3", "4", "5", "6"]:
-            teacher.show_students()
-            num = int(input("Выберите студента: ")) - 1
-
-            if num < 0 or num >= len(teacher.students):
-                print("Неверный выбор")
-                continue
-
-            student = teacher.students[num]
-
-            if choice == "3":
-                teacher.check_lab(student)
-
-            elif choice == "4":
-                teacher.consult(student)
-
-            elif choice == "5":
-                teacher.exam(student)
-
-            elif choice == "6":
-                grade = input("Введите оценку: ")
-                teacher.grade(student, grade)
+            menu_student_action(teacher, choice)
 
         elif choice == "7":
             teacher.show_students()

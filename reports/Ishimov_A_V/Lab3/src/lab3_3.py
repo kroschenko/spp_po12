@@ -1,7 +1,5 @@
 from abc import ABC, abstractmethod
 
-# Получатель (Receiver)
-
 
 class Pizzeria:
 
@@ -12,9 +10,6 @@ class Pizzeria:
 
     def cancel_order(self):
         print("Заказ отменен")
-
-
-# Интерфейс команды
 
 
 class Command(ABC):
@@ -28,9 +23,6 @@ class Command(ABC):
         pass
 
 
-# Конкретная команда
-
-
 class OrderCommand(Command):
 
     def __init__(self, pizzeria, items):
@@ -42,9 +34,6 @@ class OrderCommand(Command):
 
     def undo(self):
         self.pizzeria.cancel_order()
-
-
-# Инициатор
 
 
 class Waiter:
@@ -73,7 +62,35 @@ class Waiter:
             print("Нет заказа для повторения")
 
 
-# Меню
+def choose_items():
+    items = []
+
+    while True:
+        print("\nДобавить позицию:")
+        print("1. Пицца Маргарита")
+        print("2. Пицца Пепперони")
+        print("3. Кола")
+        print("4. Завершить заказ")
+
+        item_choice = input("Выбор: ")
+
+        if item_choice == "1":
+            items.append("Пицца Маргарита")
+        elif item_choice == "2":
+            items.append("Пицца Пепперони")
+        elif item_choice == "3":
+            items.append("Кола")
+        elif item_choice == "4":
+            break
+
+    return items
+
+
+def process_order(pizzeria, waiter):
+    items = choose_items()
+    if items:
+        command = OrderCommand(pizzeria, items)
+        waiter.take_order(command)
 
 
 def main():
@@ -91,33 +108,7 @@ def main():
         choice = input("Выберите пункт: ")
 
         if choice == "1":
-
-            items = []
-
-            while True:
-                print("\nДобавить позицию:")
-                print("1. Пицца Маргарита")
-                print("2. Пицца Пепперони")
-                print("3. Кола")
-                print("4. Завершить заказ")
-
-                item_choice = input("Выбор: ")
-
-                if item_choice == "1":
-                    items.append("Пицца Маргарита")
-
-                elif item_choice == "2":
-                    items.append("Пицца Пепперони")
-
-                elif item_choice == "3":
-                    items.append("Кола")
-
-                elif item_choice == "4":
-                    break
-
-            if items:
-                command = OrderCommand(pizzeria, items)
-                waiter.take_order(command)
+            process_order(pizzeria, waiter)
 
         elif choice == "2":
             waiter.cancel_last()
