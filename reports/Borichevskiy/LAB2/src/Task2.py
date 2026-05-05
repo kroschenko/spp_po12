@@ -54,16 +54,14 @@ class CreditCard:
     def __init__(self, card_number: str, limit: float):
         self.card_number = card_number
         self.limit = limit
-        self.balance = 0.0  # Current debt
+        self.balance = 0.0
         self.status = CardStatus.ACTIVE
 
     @property
     def available_credit(self) -> float:
-        """Available credit amount"""
         return self.limit - self.balance
 
     def charge(self, amount: float) -> bool:
-        """Charge amount from card"""
         if self.status == CardStatus.BLOCKED:
             print(f"Card {self.card_number}: operation declined (card blocked)")
             return False
@@ -75,7 +73,6 @@ class CreditCard:
         return True
 
     def block(self) -> None:
-        """Block the card"""
         self.status = CardStatus.BLOCKED
         print(f"Card {self.card_number}: blocked")
 
@@ -97,7 +94,6 @@ class BankAccount:
         return self._balance
 
     def deposit(self, amount: float) -> bool:
-        """Deposit money to account"""
         if self.status != AccountStatus.ACTIVE:
             print(f"Account {self.account_number}: operation not allowed")
             return False
@@ -106,7 +102,6 @@ class BankAccount:
         return True
 
     def withdraw(self, amount: float) -> bool:
-        """Withdraw money from account"""
         if self.status != AccountStatus.ACTIVE:
             print(f"Account {self.account_number}: operation not allowed")
             return False
@@ -118,7 +113,6 @@ class BankAccount:
         return True
 
     def close(self) -> None:
-        """Close the account"""
         self.status = AccountStatus.CLOSED
         print(f"Account {self.account_number}: closed")
 
@@ -130,7 +124,7 @@ class BankAccount:
 
 
 class User(ABC):
-    """Abstract user class (generalization)"""
+    """Abstract user class"""
 
     def __init__(self, user_id: str, name: str):
         self.user_id = user_id
@@ -138,11 +132,11 @@ class User(ABC):
 
     @abstractmethod
     def get_role(self) -> str:
-        """Get user role (to be implemented by subclasses)"""
+        pass
 
 
 class Client(User):
-    """Client class (User implementation, aggregates Account and Card)"""
+    """Client class"""
 
     def __init__(self, user_id: str, name: str):
         super().__init__(user_id, name)
@@ -152,80 +146,72 @@ class Client(User):
     def get_role(self) -> str:
         return "Client"
 
-    def assign_account(self, account: BankAccount) -> None:
-        """Assign bank account to client"""
-        self.account = account
-        print(f"{self.name}: assigned {account}")
+    def assign_account(self, new_account: BankAccount) -> None:
+        self.account = new_account
+        print(f"{self.name}: assigned {new_account}")
 
-    def assign_card(self, card: CreditCard) -> None:
-        """Assign credit card to client"""
-        self.credit_card = card
-        print(f"{self.name}: assigned {card}")
+    def assign_card(self, new_card: CreditCard) -> None:
+        self.credit_card = new_card
+        print(f"{self.name}: assigned {new_card}")
 
-    def pay_order(self, order: Order) -> bool:
-        """Pay order using bank account"""
+    def pay_order(self, order_obj: Order) -> bool:
         if not self.account:
             print(f"{self.name}: no account assigned")
             return False
 
-        print(f"\n--- Paying order {order.order_id} ---")
-        if self.account.withdraw(order.amount):
-            order.is_paid = True
-            print(f"Order {order.order_id} paid!")
+        print(f"\n--- Paying order {order_obj.order_id} ---")
+        if self.account.withdraw(order_obj.amount):
+            order_obj.is_paid = True
+            print(f"Order {order_obj.order_id} paid!")
             return True
         return False
 
-    def pay_order_by_card(self, order: Order) -> bool:
-        """Pay order using credit card"""
+    def pay_order_by_card(self, order_obj: Order) -> bool:
         if not self.credit_card:
             print(f"{self.name}: no card assigned")
             return False
 
-        print(f"\nPaying order {order.order_id} with card")
-        if self.credit_card.charge(order.amount):
-            order.is_paid = True
-            print(f"Order {order.order_id} paid by card!")
+        print(f"\nPaying order {order_obj.order_id} with card")
+        if self.credit_card.charge(order_obj.amount):
+            order_obj.is_paid = True
+            print(f"Order {order_obj.order_id} paid by card!")
             return True
         return False
 
-    def transfer_to_account(self, target_account: BankAccount, amount: float) -> bool:
-        """Transfer money to another account"""
+    def transfer_to_account(self, target_account: BankAccount, sum_to_transfer: float) -> bool:
         if not self.account:
             print(f"{self.name}: no account assigned")
             return False
 
-        print(f"\nTransferring {amount} RUB to account {target_account.account_number}")
-        if self.account.withdraw(amount):
-            target_account.deposit(amount)
+        print(f"\nTransferring {sum_to_transfer} RUB to account {target_account.account_number}")
+        if self.account.withdraw(sum_to_transfer):
+            target_account.deposit(sum_to_transfer)
             print("Transfer completed!")
             return True
         return False
 
     def block_own_card(self) -> None:
-        """Self-block card"""
         if self.credit_card:
             self.credit_card.block()
 
     def close_account(self) -> None:
-        """Close own account"""
         if self.account:
             self.account.close()
             self.account = None
 
 
 class Administrator(User):
-    """Administrator class (User implementation)"""
+    """Administrator class"""
 
     def get_role(self) -> str:
         return "Administrator"
 
-    def block_card_for_debt(self, card: CreditCard) -> None:
-        """Block card if credit limit exceeded"""
-        if card.balance >= card.limit:
-            print(f"\n[ADMIN] Blocking card {card.card_number} due to limit exceeded")
-            card.block()
+    def block_card_for_debt(self, target_card: CreditCard) -> None:
+        if target_card.balance >= target_card.limit:
+            print(f"\n[ADMIN] Blocking card {target_card.card_number} due to limit exceeded")
+            target_card.block()
         else:
-            print(f"\n[ADMIN] Card {card.card_number} is OK, no blocking required")
+            print(f"\n[ADMIN] Card {target_card.card_number} is OK, no blocking required")
 
 
 # ==================== DEMONSTRATION ====================
@@ -274,7 +260,7 @@ if __name__ == "__main__":
     order3 = Order("ORD-004", 1000.0, "Fuel")
     client1.pay_order_by_card(order3)
 
-    print("\n---Closing account---")
+    print("\n--- Closing account ---")
     client1.close_account()
 
     print("\n" + "=" * 60)
