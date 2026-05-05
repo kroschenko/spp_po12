@@ -3,7 +3,7 @@
 Реализация GUI на tkinter с анимацией и управлением.
 """
 import tkinter as tk
-from tkinter import filedialog, messagebox
+from tkinter import messagebox
 
 
 class PeanoCurveApp(tk.Tk):
@@ -30,24 +30,20 @@ class PeanoCurveApp(tk.Tk):
         ctrl_frame = tk.Frame(self, width=250)
         ctrl_frame.pack(side=tk.LEFT, fill=tk.Y, padx=10, pady=10)
 
-        # Кнопка Пауза/Старт
         self.btn_pause = tk.Button(ctrl_frame, text="Пауза", command=self.toggle_pause)
         self.btn_pause.pack(fill=tk.X, pady=5)
 
-        # Выбор глубины
         tk.Label(ctrl_frame, text="Глубина рекурсии:").pack()
         self.depth_scale = tk.Scale(ctrl_frame, from_=1, to=4, orient=tk.HORIZONTAL,
                                      command=self.on_param_change)
         self.depth_scale.set(3)
         self.depth_scale.pack(fill=tk.X, pady=5)
 
-        # Выбор скорости
         tk.Label(ctrl_frame, text="Скорость (задержка мс):").pack()
         self.speed_scale = tk.Scale(ctrl_frame, from_=1, to=200, orient=tk.HORIZONTAL)
         self.speed_scale.set(50)
         self.speed_scale.pack(fill=tk.X, pady=5)
 
-        # Кнопка Скриншот
         tk.Button(ctrl_frame, text="Снять скриншот", command=self.take_screenshot).pack(fill=tk.X, pady=5)
 
     def toggle_pause(self):
@@ -56,27 +52,26 @@ class PeanoCurveApp(tk.Tk):
         self.btn_pause.config(text="Старт" if not self.is_running else "Пауза")
 
     def on_param_change(self, _):
-        """Обработка изменения параметров на лету."""
+        """Обработка изменения параметров."""
         self.depth = self.depth_scale.get()
         self.update_fractal()
 
-    def generate_peano(self, x, y, size, depth, angle_type):
+    def generate_peano(self, x, y, size, depth):
         """Рекурсивный алгоритм генерации точек кривой Пеано."""
         if depth == 0:
             self.points.append((x + size / 2, y + size / 2))
             return
 
         new_size = size / 3
-        # Упрощенная схема обхода для демонстрации структуры
         for i in range(3):
             for j in range(3):
-                self.generate_peano(x + i * new_size, y + j * new_size, new_size, depth - 1, 0)
+                self.generate_peano(x + i * new_size, y + j * new_size, new_size, depth - 1)
 
     def update_fractal(self):
         """Обновление списка точек и сброс холста."""
         self.canvas.delete("all")
         self.points = []
-        self.generate_peano(50, 50, 500, self.depth, 0)
+        self.generate_peano(50, 50, 500, self.depth)
         self.draw_step(0)
 
     def draw_step(self, index):
@@ -97,8 +92,8 @@ class PeanoCurveApp(tk.Tk):
         try:
             self.canvas.postscript(file="peano_fractal.ps", colormode='color')
             messagebox.showinfo("Готово", "Скриншот сохранен как peano_fractal.ps")
-        except Exception as e:
-            messagebox.showerror("Ошибка", f"Не удалось сохранить: {e}")
+        except OSError as err:
+            messagebox.showerror("Ошибка", f"Не удалось сохранить: {err}")
 
 
 if __name__ == "__main__":
