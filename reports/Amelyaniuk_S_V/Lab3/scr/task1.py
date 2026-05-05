@@ -1,9 +1,20 @@
+"""Модуль с реализацией паттерна Фабрика для создания смартфонов."""
 from abc import ABC, abstractmethod
 
 
-# --- Абстрактный продукт ---
-class Smartphone(ABC):
-    def __init__(self, model_name: str, cpu: str, ram: int, screen: str, price: int):
+class Smartphone(ABC):  # pylint: disable=R0903,R0913,R0917
+    """Абстрактный класс для представления смартфона."""
+
+    def __init__(self, model_name: str, cpu: str, ram: int, screen: str, price: int):  # pylint: disable=R0913,R0917
+        """Инициализирует смартфон с заданными характеристиками.
+
+        Args:
+            model_name: Название модели.
+            cpu: Процессор.
+            ram: Объём оперативной памяти (ГБ).
+            screen: Характеристики экрана.
+            price: Цена в рублях.
+        """
         self.model_name = model_name
         self.cpu = cpu
         self.ram = ram
@@ -12,14 +23,14 @@ class Smartphone(ABC):
 
     @abstractmethod
     def get_info(self):
-        pass
+        """Возвращает информацию о смартфоне."""
 
 
-# --- Конкретные продукты (Модели смартфонов с характеристиками) ---
+class BudgetModel(Smartphone):  # pylint: disable=R0903
+    """Бюджетная модель смартфона."""
 
-
-class BudgetModel(Smartphone):
     def __init__(self):
+        """Инициализирует бюджетную модель смартфона."""
         super().__init__(
             model_name="Lite-2025",
             cpu="MediaTek Helio G99",
@@ -29,11 +40,19 @@ class BudgetModel(Smartphone):
         )
 
     def get_info(self):
-        return f"Бюджетная модель: {self.model_name} | Процессор: {self.cpu} | ОЗУ: {self.ram}ГБ | Экран: {self.screen} | Цена: {self.price} руб."
+        """Возвращает информацию о бюджетной модели."""
+        return (
+            f"Бюджетная модель: {self.model_name} | "
+            f"Процессор: {self.cpu} | ОЗУ: {self.ram}ГБ | "
+            f"Экран: {self.screen} | Цена: {self.price} руб."
+        )
 
 
-class FlagshipModel(Smartphone):
+class FlagshipModel(Smartphone):  # pylint: disable=R0903
+    """Флагманская модель смартфона."""
+
     def __init__(self):
+        """Инициализирует флагманскую модель смартфона."""
         super().__init__(
             model_name="Ultra-Pro Max",
             cpu="Snapdragon 8 Gen 3",
@@ -43,11 +62,19 @@ class FlagshipModel(Smartphone):
         )
 
     def get_info(self):
-        return f"Флагманская модель: {self.model_name} | Процессор: {self.cpu} | ОЗУ: {self.ram}ГБ | Экран: {self.screen} | Цена: {self.price} руб."
+        """Возвращает информацию о флагманской модели."""
+        return (
+            f"Флагманская модель: {self.model_name} | "
+            f"Процессор: {self.cpu} | ОЗУ: {self.ram}ГБ | "
+            f"Экран: {self.screen} | Цена: {self.price} руб."
+        )
 
 
-class WorkstationModel(Smartphone):
+class WorkstationModel(Smartphone):  # pylint: disable=R0903
+    """Бизнес-модель смартфона."""
+
     def __init__(self):
+        """Инициализирует бизнес-модель смартфона."""
         super().__init__(
             model_name="Business Tab-Phone",
             cpu="Apple A18 Pro",
@@ -57,14 +84,20 @@ class WorkstationModel(Smartphone):
         )
 
     def get_info(self):
-        return f"Бизнес-модель: {self.model_name} | Процессор: {self.cpu} | ОЗУ: {self.ram}ГБ | Экран: {self.screen} | Цена: {self.price} руб."
+        """Возвращает информацию о бизнес-модели."""
+        return (
+            f"Бизнес-модель: {self.model_name} | "
+            f"Процессор: {self.cpu} | ОЗУ: {self.ram}ГБ | "
+            f"Экран: {self.screen} | Цена: {self.price} руб."
+        )
 
 
-# --- Фабрика (Завод) ---
-class SmartphoneFactory:
+class SmartphoneFactory:  # pylint: disable=R0903
+    """Фабрика для создания смартфонов различных типов."""
+
     @staticmethod
     def produce_smartphone(type_name: str) -> Smartphone:
-        """Метод для создания моделей по заранее выбранным типам"""
+        """Создает смартфон заданного типа."""
         types = {
             "budget": BudgetModel,
             "flagship": FlagshipModel,
@@ -74,19 +107,16 @@ class SmartphoneFactory:
         smartphone_class = types.get(type_name.lower())
         if smartphone_class:
             return smartphone_class()
-        else:
-            raise ValueError(
-                f"Модель типа '{type_name}' не выпускается на нашем заводе."
-            )
+        raise ValueError(
+            f"Модель типа '{type_name}' не выпускается на нашем заводе."
+        )
 
 
-# --- Клиентский код ---
 if __name__ == "__main__":
     factory = SmartphoneFactory()
 
     print("=== Запуск производственной линии смартфона ===")
 
-    # Создаем разные модели по их типам (характеристики уже внутри)
     phone1 = factory.produce_smartphone("budget")
     phone2 = factory.produce_smartphone("flagship")
     phone3 = factory.produce_smartphone("business")
@@ -95,8 +125,7 @@ if __name__ == "__main__":
     print(phone2.get_info())
     print(phone3.get_info())
 
-    # Попытка создать неизвестную модель
     try:
-        phone4 = factory.produce_smartphone("gaming")
+        factory.produce_smartphone("gaming")
     except ValueError as e:
-        print(f"\n[Ошибка производства] {e}")
+        print(f"Ошибка: {e}")
