@@ -1,6 +1,11 @@
-class IntSet:
-    def __init__(self, max_size, values=None):
+"""Модуль с классом IntSet для работы с множеством целых чисел."""
 
+
+class IntSet:
+    """Класс для представления множества целых чисел с ограниченным размером."""
+
+    def __init__(self, max_size, values=None):
+        """Инициализирует множество с заданным максимальным размером."""
         self._max_size = max_size
         self._data = []
 
@@ -10,9 +15,11 @@ class IntSet:
 
     @property
     def max_size(self):
+        """Возвращает максимальный размер множества."""
         return self._max_size
 
     def add(self, val):
+        """Добавляет значение в множество, если оно целое число."""
         if not isinstance(val, int):
             print(f"[Ошибка] '{val}' не является целым числом.")
             return
@@ -24,27 +31,36 @@ class IntSet:
                 print(f"[Ошибка] Множество переполнено! Нельзя добавить {val}")
 
     def remove(self, val):
+        """Удаляет значение из множества."""
         if val in self._data:
             self._data.remove(val)
 
     def contains(self, val):
+        """Проверяет наличие значения в множестве."""
         return val in self._data
 
+    def _get_data(self):
+        """Возвращает копию внутренних данных множества."""
+        return list(self._data)
+
     def union(self, other):
+        """Возвращает объединение двух множеств."""
         new_capacity = self.max_size + other.max_size
         new_set = IntSet(new_capacity)
 
-        for x in self._data:
+        for x in self._get_data():
             new_set.add(x)
-        for x in other._data:
+        for x in other._get_data():  # pylint: disable=W0212
             new_set.add(x)
 
         return new_set
 
     def __str__(self):
+        """Возвращает строковое представление множества."""
         return f"IntSet({sorted(self._data)}) [Макс. размер: {self._max_size}]"
 
     def __eq__(self, other):
+        """Проверяет равенство двух множеств."""
         if not isinstance(other, IntSet):
             return False
         return sorted(self._data) == sorted(other._data)
