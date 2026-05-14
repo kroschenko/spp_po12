@@ -1,102 +1,141 @@
+"""Module implementing IntegerSet class for integer collections."""
+
+from typing import List, Union, Iterator
+
+
 class IntegerSet:
+    """A set implementation for integers only."""
 
-    def __init__(self, initial_elements=None):
-
-        # Поле: список для хранения элементов множества
-        self.__elements = []
-
-        # Если переданы начальные элементы, добавляем их
-        if initial_elements is not None:
+    def __init__(self, initial_elements: Union[List[int], None] = None) -> None:
+        """Initialize IntegerSet with optional initial elements."""
+        self._elements: List[int] = []
+        if initial_elements:
             for element in initial_elements:
                 self.add(element)
 
-    def add(self, element):
+    @property
+    def elements(self) -> List[int]:
+        """Return sorted list of elements."""
+        return sorted(self._elements)
 
-        # Проверяем, что элемент целое число
-        if not isinstance(element, int):
-            raise TypeError("Множество может содержать только целые числа")
+    @property
+    def size(self) -> int:
+        """Return number of elements in the set."""
+        return len(self._elements)
 
-        # Добавляем только если элемент еще не в множестве
-        if element not in self.__elements:
-            self.__elements.append(element)
-            # Сортируем для удобства (опционально)
-            self.__elements.sort()
+    def add(self, value: int) -> bool:
+        """
+        Add integer to set.
 
-    def remove(self, element):
+        Args:
+            value: Integer to add.
 
-        if element in self.__elements:
-            self.__elements.remove(element)
+        Returns:
+            True if added, False if already exists.
+
+        Raises:
+            TypeError: If value is not an integer.
+        """
+        if not isinstance(value, int):
+            raise TypeError(f"Only integers are allowed, got {type(value).__name__}")
+        if value not in self._elements:
+            self._elements.append(value)
             return True
         return False
 
-    def contains(self, element):
+    def remove(self, value: int) -> bool:
+        """
+        Remove integer from set.
 
-        return element in self.__elements
+        Args:
+            value: Integer to remove.
 
-    def intersection(self, other_set):
+        Returns:
+            True if removed, False if not found.
 
-        if not isinstance(other_set, IntegerSet):
-            raise TypeError("Аргумент должен быть объектом класса IntegerSet")
+        Raises:
+            TypeError: If value is not an integer.
+        """
+        if not isinstance(value, int):
+            raise TypeError(f"Only integers are allowed, got {type(value).__name__}")
+        if value in self._elements:
+            self._elements.remove(value)
+            return True
+        return False
 
-        # Находим общие элементы
-        common_elements = []
-        for element in self.__elements:
-            if element in other_set.__elements:
-                common_elements.append(element)
+    def contains(self, value: int) -> bool:
+        """
+        Check if value exists in set.
 
-        # Создаем новое множество с общими элементами
-        return IntegerSet(common_elements)
+        Args:
+            value: Integer to check.
 
-    def __str__(self):
+        Returns:
+            True if exists, False otherwise.
 
-        if not self.__elements:
-            return "{}"
+        Raises:
+            TypeError: If value is not an integer.
+        """
+        if not isinstance(value, int):
+            raise TypeError(f"Only integers are allowed, got {type(value).__name__}")
+        return value in self._elements
 
-        elements_str = ", ".join(str(e) for e in self.__elements)
-        return "{" + elements_str + "}"
+    def intersection(self, other: "IntegerSet") -> "IntegerSet":
+        """
+        Return intersection with another IntegerSet.
 
-    def __eq__(self, other):
+        Args:
+            other: Another IntegerSet instance.
 
+        Returns:
+            New IntegerSet with common elements.
+
+        Raises:
+            TypeError: If other is not an IntegerSet.
+        """
         if not isinstance(other, IntegerSet):
-            return False
+            raise TypeError(
+                f"Can only intersect with IntegerSet, " f"got {type(other).__name__}"
+            )
+        result = IntegerSet()
+        for element in self._elements:
+            if other.contains(element):
+                result.add(element)
+        return result
 
-        return self.__elements == other.__elements
+    def display(self) -> None:
+        """Print set in {a, b, c} format."""
+        if not self._elements:
+            print("{}")
+        else:
+            sorted_elements = sorted(self._elements)
+            print(f"{{{', '.join(map(str, sorted_elements))}}}")
 
-    # Свойство для получения количества элементов (геттер)
-    @property
-    def size(self):
+    def __str__(self) -> str:
+        """Return string representation in {a, b, c} format."""
+        if not self._elements:
+            return "{}"
+        sorted_elements = sorted(self._elements)
+        return f"{{{', '.join(map(str, sorted_elements))}}}"
 
-        return len(self.__elements)
+    def __repr__(self) -> str:
+        """Return developer-friendly string representation."""
+        return f"IntegerSet({self._elements})"
 
-    # Свойство для получения всех элементов (геттер)
-    @property
-    def elements(self):
+    def __eq__(self, other: object) -> bool:
+        """Check equality with another IntegerSet."""
+        if not isinstance(other, IntegerSet):
+            return NotImplemented
+        return set(self._elements) == set(other._elements)
 
-        return self.__elements.copy()
+    def __len__(self) -> int:
+        """Return number of elements."""
+        return len(self._elements)
 
-    # Свойство для установки элементов (сеттер)
-    @elements.setter
-    def elements(self, new_elements):
+    def __iter__(self) -> Iterator[int]:
+        """Return iterator over sorted elements."""
+        return iter(sorted(self._elements))
 
-        self.__elements = []
-        for element in new_elements:
-            self.add(element)
-
-    def display(self):
-
-        print(self.__str__())
-
-
-# Пример использования
-if __name__ == "__main__":
-    set1 = IntegerSet([1, 2, 3, 3, 4])
-    set2 = IntegerSet([3, 4, 5, 6])
-
-    print(f"Множество 1: {set1}")
-    print(f"Принадлежит ли 2 множеству 1? {set1.contains(2)}")
-
-    inter = set1.intersection(set2)
-    print(f"Пересечение: {inter}")
-
-    set3 = IntegerSet([4, 3, 2, 1])
-    print(f"Множество 1 равно Множеству 3? {set1 == set3}")
+    def __contains__(self, value: int) -> bool:
+        """Check if value is in set using 'in' operator."""
+        return self.contains(value)
