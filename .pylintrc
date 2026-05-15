@@ -2,7 +2,7 @@
 
 # Use multiple processes to speed up Pylint.
 jobs=2
-
+ignore=Kovaluk_K_V
 
 [MESSAGES CONTROL]
 
@@ -22,7 +22,9 @@ disable=
         too-many-instance-attributes,
         logging-fstring-interpolation,
         missing-module-docstring,
-        missing-function-docstring
+        missing-function-docstring,
+        redefined-outer-name,
+        wrong-import-position
 
 
 [BASIC]
